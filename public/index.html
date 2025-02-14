@@ -238,6 +238,8 @@ function updateUserUI(user) {
 auth.onAuthStateChanged((user) => {
     console.log("Auth State Changed:", user);
     updateUserUI(user);
+
+     window.onload = loadProducts;
 });
 </script>
 <script src="firestore.js"></script>
