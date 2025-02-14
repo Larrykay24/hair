@@ -172,18 +172,18 @@
     // ✅ Load products when the page loads
     window.onload = loadProducts;
 
-    // Elements
+   // ✅ Get User Profile Icon Element
 const userProfile = document.getElementById("userProfile");
 
-// Function to Sign In with Google (Using Redirect)
+// ✅ Function to Sign In with Google (Using Redirect)
 function signInWithGoogle() {
     console.log("Sign-In Clicked"); // Debug log
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithRedirect(provider); // 🔥 Use Redirect instead of Popup
+    firebase.auth().signInWithRedirect(provider); // 🔥 Redirect instead of popup
 }
 
-// Handle redirect result (after login)
-auth.getRedirectResult().then((result) => {
+// ✅ Handle Redirect Result (After Login)
+firebase.auth().getRedirectResult().then((result) => {
     if (result.user) {
         console.log("User Signed In:", result.user); // Debug log
         updateUserUI(result.user);
@@ -192,10 +192,10 @@ auth.getRedirectResult().then((result) => {
     console.error("Redirect Sign-in Error:", error);
 });
 
-// Function to Sign Out
+// ✅ Function to Sign Out
 function signOutUser() {
     console.log("Sign-Out Clicked"); // Debug log
-    auth.signOut().then(() => {
+    firebase.auth().signOut().then(() => {
         console.log("User Signed Out"); // Debug log
         updateUserUI(null);
     }).catch((error) => {
@@ -203,10 +203,13 @@ function signOutUser() {
     });
 }
 
-// Update UI Based on Auth State
+// ✅ Update UI Based on Auth State
 function updateUserUI(user) {
     if (user) {
-        userProfile.innerHTML = `<img src="${user.photoURL}" class="w-10 h-10 rounded-full cursor-pointer" title="Click to sign out">`;
+        // Ensure profile image exists, fallback to default
+        const userImage = user.photoURL ? user.photoURL : 'default-avatar.png';
+        
+        userProfile.innerHTML = `<img src="${userImage}" class="w-10 h-10 rounded-full cursor-pointer" title="Click to sign out">`;
         userProfile.onclick = signOutUser;
     } else {
         userProfile.innerHTML = `<i class='bx bx-user-circle text-3xl cursor-pointer'></i>`;
@@ -214,8 +217,8 @@ function updateUserUI(user) {
     }
 }
 
-// Check if User is Logged In on Page Load
-auth.onAuthStateChanged((user) => {
+// ✅ Check if User is Logged In on Page Load
+firebase.auth().onAuthStateChanged((user) => {
     console.log("Auth State Changed:", user); // Debug log
     updateUserUI(user);
 });
