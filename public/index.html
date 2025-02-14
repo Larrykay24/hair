@@ -181,34 +181,48 @@
 </script>
 <script src="firestore.js"></script>
 <script>// Get Elements
-// Get Elements
-const searchIcon = document.getElementById("searchIcon"); // Navbar search icon
-const searchInput = document.getElementById("searchInput"); // Search bar input field
-const productsContainer = document.getElementById("products"); // Product list container
+const searchIcon = document.getElementById("searchIcon"); 
+const searchInput = document.getElementById("searchInput");
+const productsContainer = document.getElementById("products"); 
 
-// When search icon is clicked, focus on the existing search input
+// Toggle Search Field When Clicking the Search Icon
 searchIcon.addEventListener("click", () => {
-    searchInput.focus(); // Focus on the input field
+    searchInput.classList.toggle("hidden"); // Show/Hide Search Bar
+    searchInput.focus(); // Focus on the input field when opened
 });
 
-// Function to filter products
+// Close Search Bar When Clicking Outside
+document.addEventListener("click", (event) => {
+    if (!searchIcon.contains(event.target) && !searchInput.contains(event.target)) {
+        searchInput.classList.add("hidden"); // Hide search input
+    }
+});
+
+// Close Search Bar When Pressing Escape
+searchInput.addEventListener("keyup", (event) => {
+    if (event.key === "Escape") {
+        searchInput.classList.add("hidden"); // Hide search input
+    }
+});
+
+// Function to Filter Products
 function filterProducts() {
-    const searchText = searchInput.value.toLowerCase(); // Get typed text
-    const productCards = productsContainer.children; // Get all products
+    const searchText = searchInput.value.toLowerCase();
+    const productCards = productsContainer.children;
 
     for (let product of productCards) {
         const productName = product.querySelector("h2").innerText.toLowerCase();
         const productDescription = product.querySelector("p").innerText.toLowerCase();
 
         if (productName.includes(searchText) || productDescription.includes(searchText)) {
-            product.style.display = "block"; // Show matching products
+            product.style.display = "block"; 
         } else {
-            product.style.display = "none"; // Hide non-matching products
+            product.style.display = "none"; 
         }
     }
 }
 
-// Listen for typing in search field
+// Listen for Typing in Search Field
 searchInput.addEventListener("keyup", filterProducts);
 
 </script>
