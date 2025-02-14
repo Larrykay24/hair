@@ -170,69 +170,69 @@
     // ✅ Load products when the page loads
     window.onload = loadProducts;
 
- // ✅ Get User Profile Icon Element
+// ✅ Select Elements
 const userProfile = document.getElementById("userIcon");
+const auth = firebase.auth();
 
-// ✅ Function to Sign In with Google (Using Redirect)
-function signInWithGoogle() {
-    console.log("Sign-In Clicked"); // Debug log
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithRedirect(provider); // 🔥 Redirect instead of popup
+// ✅ Function to Show Popup Message
+function showToast(message) {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    toast.className = "fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg";
+    document.body.appendChild(toast);
+
+    // Remove the message after 3 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
 
-// ✅ Handle Redirect Result (After Login)
-firebase.auth().getRedirectResult().then((result) => {
-    if (result.user) {
-        console.log("User Signed In:", result.user); // Debug log
-        updateUserUI(result.user);
-    }
-}).catch((error) => {
-    console.error("Redirect Sign-in Error:", error);
-});
+// ✅ Function to Sign In with Google
+function signInWithGoogle() {
+    console.log("Sign-In Clicked");
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            console.log("User Signed In:", result.user);
+            updateUserUI(result.user);
+            showToast("✅ Signed in successfully!");
+        })
+        .catch((error) => {
+            console.error("Sign-in Error:", error);
+            showToast("❌ Sign-in failed. Try again.");
+        });
+}
 
 // ✅ Function to Sign Out
 function signOutUser() {
-    console.log("Sign-Out Clicked"); // Debug log
-    firebase.auth().signOut().then(() => {
-        console.log("User Signed Out"); // Debug log
-        updateUserUI(null);
-    }).catch((error) => {
-        console.error("Sign-out Error:", error);
-    });
+    console.log("Sign-Out Clicked");
+    auth.signOut()
+        .then(() => {
+            console.log("User Signed Out");
+            updateUserUI(null);
+            showToast("✅ Signed out successfully!");
+        })
+        .catch((error) => {
+            console.error("Sign-out Error:", error);
+            showToast("❌ Sign-out failed. Try again.");
+        });
 }
 
 // ✅ Update UI Based on Auth State
 function updateUserUI(user) {
     if (user) {
-        // Ensure profile image exists, fallback to default avatar
-        const userImage = user.photoURL ? user.photoURL : 'https://via.placeholder.com/40';
-
-        // ✅ Update `userProfile` to an image instead of replacing innerHTML
-        userProfile.classList.remove('bx', 'bx-user-circle'); // Remove icon classes
-        userProfile.innerHTML = ""; // Clear existing content
-        userProfile.style.backgroundImage = `url('${userImage}')`;
-        userProfile.style.width = "40px";
-        userProfile.style.height = "40px";
-        userProfile.style.borderRadius = "50%";
-        userProfile.style.backgroundSize = "cover";
-        userProfile.style.display = "inline-block";
-
-        // ✅ Set logout function
+        const userImage = user.photoURL || "https://via.placeholder.com/40";
+        userProfile.innerHTML = `<img src="${userImage}" class="w-10 h-10 rounded-full cursor-pointer" title="Click to sign out">`;
         userProfile.onclick = signOutUser;
     } else {
-        // ✅ Reset to default icon for sign-in
-        userProfile.style = ""; // Reset styles
-        userProfile.classList.add('bx', 'bx-user-circle', 'text-3xl', 'cursor-pointer');
-        userProfile.innerHTML = ""; // Clear any unwanted elements
-
-        // ✅ Set login function
+        userProfile.innerHTML = `<i class='bx bx-user-circle text-3xl cursor-pointer'></i>`;
         userProfile.onclick = signInWithGoogle;
     }
 }
 
-// ✅ Check if User is Logged In on Page Load
-firebase.auth().onAuthStateChanged((user) => {
-    console.log("Auth State Changed:", user); // Debug log
+// ✅ Detect Auth State Changes (Runs on Page Load)
+auth.onAuthStateChanged((user) => {
+    console.log("Auth State Changed:", user);
     updateUserUI(user);
 });
 
