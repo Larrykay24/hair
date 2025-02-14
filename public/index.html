@@ -181,36 +181,36 @@
 </script>
 <script src="firestore.js"></script>
 <script>// Get Elements
-const searchIcon = document.getElementById("searchIcon");
-const searchBarContainer = document.getElementById("searchBarContainer");
-const searchInput = document.getElementById("searchInput");
-const productsContainer = document.getElementById("products");
+// Get Elements
+const searchIcon = document.getElementById("searchIcon"); // Navbar search icon
+const searchInput = document.getElementById("searchInput"); // Search bar input field
+const productsContainer = document.getElementById("products"); // Product list container
 
-// Toggle Search Bar when the search icon is clicked
+// When search icon is clicked, focus on the existing search input
 searchIcon.addEventListener("click", () => {
-    searchBarContainer.classList.toggle("hidden");
-    searchInput.focus(); // Focus on the input field when opened
+    searchInput.focus(); // Focus on the input field
 });
 
 // Function to filter products
 function filterProducts() {
-    const searchText = searchInput.value.toLowerCase();
-    const productCards = productsContainer.children;
+    const searchText = searchInput.value.toLowerCase(); // Get typed text
+    const productCards = productsContainer.children; // Get all products
 
     for (let product of productCards) {
         const productName = product.querySelector("h2").innerText.toLowerCase();
         const productDescription = product.querySelector("p").innerText.toLowerCase();
 
         if (productName.includes(searchText) || productDescription.includes(searchText)) {
-            product.style.display = "block"; // Show matching product
+            product.style.display = "block"; // Show matching products
         } else {
-            product.style.display = "none"; // Hide non-matching product
+            product.style.display = "none"; // Hide non-matching products
         }
     }
 }
 
 // Listen for typing in search field
 searchInput.addEventListener("keyup", filterProducts);
+
 </script>
 </body>
 </html>
