@@ -76,11 +76,10 @@
 <section class="container mx-auto px-4 mt-8 flex justify-between items-center">
 
     <!-- Search Bar (Left) -->
-    <div class="relative w-full max-w-md">
-        <input type="text" id="searchInput" placeholder="Search for hair products..." 
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
-        <i class='bx bx-search absolute right-3 top-2 text-gray-500 text-xl'></i>
-    </div>
+   <div id="searchContainer" class="hidden absolute top-16 right-4 bg-white p-2 shadow-md rounded-lg">
+    <input type="text" id="searchInput" placeholder="Search products..." 
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+</div>
 
     <!-- Filter Button (Right) -->
     <button id="filterBtn" class="ml-4 bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg text-lg font-semibold">
@@ -181,48 +180,36 @@
 </script>
 <script src="firestore.js"></script>
 <script>// Get Elements
-const searchIcon = document.getElementById("searchIcon"); 
+const searchIcon = document.getElementById("searchIcon");
+const searchContainer = document.getElementById("searchContainer");
 const searchInput = document.getElementById("searchInput");
-const productsContainer = document.getElementById("products"); 
+const productsContainer = document.getElementById("products");
 
-// Toggle Search Field When Clicking the Search Icon
+// ✅ Toggle Search Field When Icon is Clicked
 searchIcon.addEventListener("click", () => {
-    searchInput.classList.toggle("hidden"); // Show/Hide Search Bar
+    searchContainer.classList.toggle("hidden"); // Show/Hide Search Bar
     searchInput.focus(); // Focus on the input field when opened
 });
 
-// Close Search Bar When Clicking Outside
-document.addEventListener("click", (event) => {
-    if (!searchIcon.contains(event.target) && !searchInput.contains(event.target)) {
-        searchInput.classList.add("hidden"); // Hide search input
-    }
-});
-
-// Close Search Bar When Pressing Escape
-searchInput.addEventListener("keyup", (event) => {
-    if (event.key === "Escape") {
-        searchInput.classList.add("hidden"); // Hide search input
-    }
-});
-
-// Function to Filter Products
+// ✅ Function to Filter Products as User Types
 function filterProducts() {
-    const searchText = searchInput.value.toLowerCase();
-    const productCards = productsContainer.children;
+    const searchText = searchInput.value.toLowerCase(); // Convert to lowercase
+    const productCards = productsContainer.children; // Get all product divs
 
     for (let product of productCards) {
         const productName = product.querySelector("h2").innerText.toLowerCase();
         const productDescription = product.querySelector("p").innerText.toLowerCase();
 
+        // Check if search text matches product name or description
         if (productName.includes(searchText) || productDescription.includes(searchText)) {
-            product.style.display = "block"; 
+            product.style.display = "block";  // Show matching products
         } else {
-            product.style.display = "none"; 
+            product.style.display = "none";   // Hide non-matching products
         }
     }
 }
 
-// Listen for Typing in Search Field
+// ✅ Listen for Typing in Search Field
 searchInput.addEventListener("keyup", filterProducts);
 
 </script>
