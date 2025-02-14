@@ -68,17 +68,17 @@
     </div>
 
 </section>
-<!-- Search & Filter Section -->
-    <div id="searchBarContainer" class="hidden absolute top-14 left-0 w-full bg-white shadow-md p-3">
-    <input type="text" id="searchInput" placeholder="Search for products..." 
-        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+   <!-- Search Bar (Hidden Initially) -->
+<div id="navSearchContainer" class="hidden absolute top-14 right-4 bg-white p-2 shadow-md rounded-lg">
+    <input type="text" id="navSearchInput" placeholder="Search products..." 
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
 </div>
 <section class="container mx-auto px-4 mt-8 flex justify-between items-center">
 
     <!-- Search Bar (Left) -->
-   <div id="searchContainer" class="hidden absolute top-16 right-4 bg-white p-2 shadow-md rounded-lg">
-    <input type="text" id="searchinput" placeholder="Search products..." 
-        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+  <div id="heroSearchContainer" class="relative w-full max-w-md mx-auto mt-4">
+    <input type="text" id="heroSearchInput" placeholder="Search for products..." 
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
 </div>
 
     <!-- Filter Button (Right) -->
@@ -180,6 +180,42 @@
 </script>
 <script src="firestore.js"></script>
 <script>
+    // ✅ Get Elements
+const searchIcon = document.getElementById("searchIcon");
+const navSearchContainer = document.getElementById("navSearchContainer");
+const navSearchInput = document.getElementById("navSearchInput");
+
+const heroSearchInput = document.getElementById("heroSearchInput");
+const productsContainer = document.getElementById("products");
+
+// ✅ Toggle Navbar Search Bar
+searchIcon.addEventListener("click", () => {
+    navSearchContainer.classList.toggle("hidden"); // Show/Hide
+    navSearchInput.focus(); // Focus when opened
+});
+
+// ✅ Function to Filter Products
+function filterProducts(searchText) {
+    searchText = searchText.toLowerCase(); // Convert to lowercase for comparison
+    const productCards = productsContainer.children; // Get all products
+
+    for (let product of productCards) {
+        const productName = product.querySelector("h2").innerText.toLowerCase();
+        const productDescription = product.querySelector("p").innerText.toLowerCase();
+
+        // Check if the search text matches the product name or description
+        if (productName.includes(searchText) || productDescription.includes(searchText)) {
+            product.style.display = "block";  // Show matching products
+        } else {
+            product.style.display = "none";   // Hide non-matching products
+        }
+    }
+}
+
+// ✅ Event Listeners for Both Search Fields
+navSearchInput.addEventListener("keyup", () => filterProducts(navSearchInput.value));
+heroSearchInput.addEventListener("keyup", () => filterProducts(heroSearchInput.value));
+
 </script>
 </body>
 </html>
