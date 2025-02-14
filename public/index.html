@@ -38,9 +38,6 @@
             <div class="flex items-center space-x-4">
                 <i class='bx bx-search text-2xl cursor-pointer'></i>
                 <i class='bx bx-cart text-2xl cursor-pointer'></i>
-                 <div id="userProfile" class="cursor-pointer">
-                    <i id="userIcon" class='bx bx-user-circle text-3xl'></i>
-                </div>
             </div>
         </div>
 
@@ -170,77 +167,6 @@
 
     // ✅ Load products when the page loads
     window.onload = loadProducts;
-
-    // ✅ Firebase Authentication Setup
-const userProfile = document.getElementById("userProfile"); // Wrapper div
-const userIcon = document.getElementById("userIcon"); // Icon inside div
-const auth = firebase.auth();
-
-// ✅ Function to Show Popup Message
-function showToast(message, isError = false) {
-    const toast = document.createElement("div");
-    toast.textContent = message;
-    toast.className = `fixed bottom-5 right-5 px-4 py-2 rounded shadow-lg text-white ${
-        isError ? "bg-red-500" : "bg-green-500"
-    }`;
-    document.body.appendChild(toast);
-
-    // Remove the message after 3 seconds
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
-}
-
-// ✅ Function to Sign In with Google
-function signInWithGoogle() {
-    console.log("Sign-In Clicked");
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-        .then((result) => {
-            console.log("User Signed In:", result.user);
-            updateUserUI(result.user);
-            showToast("✅ Signed in successfully!");
-        })
-        .catch((error) => {
-            console.error("Sign-in Error:", error);
-            showToast("❌ Sign-in failed. Try again.", true);
-        });
-}
-
-// ✅ Function to Sign Out
-function signOutUser() {
-    console.log("Sign-Out Clicked");
-    auth.signOut()
-        .then(() => {
-            console.log("User Signed Out");
-            updateUserUI(null);
-            showToast("✅ Signed out successfully!");
-        })
-        .catch((error) => {
-            console.error("Sign-out Error:", error);
-            showToast("❌ Sign-out failed. Try again.", true);
-        });
-}
-
-// ✅ Update UI Based on Auth State
-function updateUserUI(user) {
-    if (user) {
-        const userImage = user.photoURL || "https://via.placeholder.com/40";
-        userProfile.innerHTML = `<img src="${userImage}" class="w-10 h-10 rounded-full cursor-pointer" title="Click to sign out">`;
-        userProfile.onclick = signOutUser;
-    } else {
-        userProfile.innerHTML = `<i id="userIcon" class='bx bx-user-circle text-3xl cursor-pointer'></i>`;
-        userProfile.onclick = signInWithGoogle;
-    }
-}
-
-// ✅ Detect Auth State Changes (Runs on Page Load)
-auth.onAuthStateChanged((user) => {
-    console.log("Auth State Changed:", user);
-    updateUserUI(user);
-
-     window.onload = loadProducts;
-});
 </script>
 <script src="firestore.js"></script>
 <script></script>
