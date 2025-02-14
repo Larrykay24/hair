@@ -190,20 +190,33 @@
 
     // Select elements
 const cartIcon = document.querySelector(".bx-cart");
-let cartCount = 0;
+const cartContainer = document.getElementById("cartContainer"); // If you have a cart container
 let cart = [];
 
 // Function to add product to cart
 function addToCart(product) {
     cart.push(product);
-    cartCount++;
     updateCartIcon();
 }
 
 // Function to update the cart icon with the count
 function updateCartIcon() {
-    cartIcon.innerHTML = `<i class='bx bx-cart text-2xl cursor-pointer'></i> 
-                          <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">${cartCount}</span>`;
+    let cartCount = cart.length;
+
+    // Remove old count element before adding a new one
+    let existingBadge = document.getElementById("cartCountBadge");
+    if (existingBadge) {
+        existingBadge.remove();
+    }
+
+    // Only show count if cart is not empty
+    if (cartCount > 0) {
+        let cartBadge = document.createElement("span");
+        cartBadge.id = "cartCountBadge";
+        cartBadge.textContent = cartCount;
+        cartBadge.className = "absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full";
+        cartIcon.parentNode.appendChild(cartBadge);
+    }
 }
 
 // Event listener for "Add to Cart" buttons
