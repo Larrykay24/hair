@@ -179,6 +179,37 @@
     window.onload = loadProducts;
 </script>
 <script src="firestore.js"></script>
-<script></script>
+<script>// Get Elements
+const searchIcon = document.getElementById("searchIcon");
+const searchBarContainer = document.getElementById("searchBarContainer");
+const searchInput = document.getElementById("searchInput");
+const productsContainer = document.getElementById("products");
+
+// Toggle Search Bar when the search icon is clicked
+searchIcon.addEventListener("click", () => {
+    searchBarContainer.classList.toggle("hidden");
+    searchInput.focus(); // Focus on the input field when opened
+});
+
+// Function to filter products
+function filterProducts() {
+    const searchText = searchInput.value.toLowerCase();
+    const productCards = productsContainer.children;
+
+    for (let product of productCards) {
+        const productName = product.querySelector("h2").innerText.toLowerCase();
+        const productDescription = product.querySelector("p").innerText.toLowerCase();
+
+        if (productName.includes(searchText) || productDescription.includes(searchText)) {
+            product.style.display = "block"; // Show matching product
+        } else {
+            product.style.display = "none"; // Hide non-matching product
+        }
+    }
+}
+
+// Listen for typing in search field
+searchInput.addEventListener("keyup", filterProducts);
+</script>
 </body>
 </html>
