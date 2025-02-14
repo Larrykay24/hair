@@ -29,8 +29,16 @@
 
             <!-- Navbar Links (Desktop) -->
             <div id="navLinks" class="hidden md:flex space-x-6">
-                <a href="#" class="hover:underline">Home</a>
-                <a href="#" class="hover:underline">Shop</a>
+                <a href="https://hair-taupe.vercel.app" class="hover:underline">Home</a>
+                <a href="#" class="hover:underline flex items-center group">
+                    Shop <i class='bx bx-chevron-down ml-1'></i>
+                    <div class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block">
+                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Wigs</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Extensions</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Hair Care</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Accessories</a>
+                    </div>
+                </a>                
                 <a href="#" class="hover:underline">Contact</a>
             </div>
 
