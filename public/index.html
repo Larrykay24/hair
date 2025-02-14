@@ -181,13 +181,13 @@
 <script src="firestore.js"></script>
 <script>// Get Elements
 const searchIcon = document.getElementById("searchIcon");
-const searchContainer = document.getElementById("searchContainer");
+const searchBarContainer = document.getElementById("searchBarContainer");
 const searchInput = document.getElementById("searchInput");
 const productsContainer = document.getElementById("products");
 
 // ✅ Toggle Search Field When Icon is Clicked
 searchIcon.addEventListener("click", () => {
-    searchContainer.classList.toggle("hidden"); // Show/Hide Search Bar
+    searchBarContainer.classList.toggle("hidden"); // Show/Hide Search Bar
     searchInput.focus(); // Focus on the input field when opened
 });
 
