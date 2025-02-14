@@ -38,9 +38,7 @@
             <div class="flex items-center space-x-4">
                 <i class='bx bx-search text-2xl cursor-pointer'></i>
                 <i class='bx bx-cart text-2xl cursor-pointer'></i>
-                <div class="cursor-pointer">
-                    <i id="userIcon" class='bx bx-user-circle text-3xl'></i>
-                </div>
+                 <i id="userIcon" class='bx bx-user-circle text-3xl'></i>
                 
             </div>
         </div>
@@ -172,7 +170,7 @@
     // ✅ Load products when the page loads
     window.onload = loadProducts;
 
-  // ✅ Get User Profile Icon Element
+ // ✅ Get User Profile Icon Element
 const userProfile = document.getElementById("userIcon");
 
 // ✅ Function to Sign In with Google (Using Redirect)
@@ -209,13 +207,26 @@ function updateUserUI(user) {
         // Ensure profile image exists, fallback to default avatar
         const userImage = user.photoURL ? user.photoURL : 'https://via.placeholder.com/40';
 
-        // ✅ Remove existing icon content and update to user image
-        userProfile.innerHTML = `<img src="${userImage}" class="w-10 h-10 rounded-full cursor-pointer" title="Click to sign out">`;
-        userProfile.onclick = signOutUser; // Clicking logs out
+        // ✅ Update `userProfile` to an image instead of replacing innerHTML
+        userProfile.classList.remove('bx', 'bx-user-circle'); // Remove icon classes
+        userProfile.innerHTML = ""; // Clear existing content
+        userProfile.style.backgroundImage = `url('${userImage}')`;
+        userProfile.style.width = "40px";
+        userProfile.style.height = "40px";
+        userProfile.style.borderRadius = "50%";
+        userProfile.style.backgroundSize = "cover";
+        userProfile.style.display = "inline-block";
+
+        // ✅ Set logout function
+        userProfile.onclick = signOutUser;
     } else {
         // ✅ Reset to default icon for sign-in
-        userProfile.innerHTML = `<i class='bx bx-user-circle text-3xl cursor-pointer'></i>`;
-        userProfile.onclick = signInWithGoogle; // Clicking logs in
+        userProfile.style = ""; // Reset styles
+        userProfile.classList.add('bx', 'bx-user-circle', 'text-3xl', 'cursor-pointer');
+        userProfile.innerHTML = ""; // Clear any unwanted elements
+
+        // ✅ Set login function
+        userProfile.onclick = signInWithGoogle;
     }
 }
 
