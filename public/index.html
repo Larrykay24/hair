@@ -31,15 +31,17 @@
             <!-- Navbar Links (Desktop) -->
             <div id="navLinks" class="hidden md:flex space-x-6">
                 <a href="https://hair-taupe.vercel.app" class="hover:underline">Home</a>
-                <a href="#" class="hover:underline flex items-center group">
-                    Shop <i class='bx bx-chevron-down ml-1'></i>
+                <div class="relative group">
+                    <a href="#" class="hover:underline flex items-center">
+                        Shop <i class='bx bx-chevron-down ml-1'></i>
+                    </a>
                     <div class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block">
                         <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Wigs</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Extensions</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Hair Care</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Accessories</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Perfume</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Hair</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Shoes</a>
                     </div>
-                </a>                
+                </div>
                 <a href="#" class="hover:underline">Contact</a>
             </div>
 
@@ -63,7 +65,17 @@
         <!-- Mobile Menu (Hidden by default) -->
         <div id="mobileMenu" class="hidden flex flex-col items-center space-y-4 py-4 bg-pink-600 md:hidden">
             <a href="#" class="hover:underline">Home</a>
-            <a href="#" class="hover:underline">Shop</a>
+            <div class="relative group">
+                <a href="#" class="hover:underline flex items-center">
+                    Shop <i class='bx bx-chevron-down ml-1'></i>
+                </a>
+                <div class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block">
+                    <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Wigs</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Perfume</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Hair</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Shoes</a>
+                </div>
+            </div>
             <a href="#" class="hover:underline">Contact</a>
         </div>
     </nav>
