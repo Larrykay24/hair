@@ -12,6 +12,9 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
+        .dropdown-menu {
+            z-index: 1000; /* Ensure dropdown appears above other elements */
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -35,7 +38,7 @@
                     <a href="#" class="hover:underline flex items-center">
                         Shop <i class='bx bx-chevron-down ml-1'></i>
                     </a>
-                    <div class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block">
+                    <div class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block dropdown-menu">
                         <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Wigs</a>
                         <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Perfume</a>
                         <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Hair</a>
@@ -69,7 +72,7 @@
                 <a href="#" class="hover:underline flex items-center">
                     Shop <i class='bx bx-chevron-down ml-1'></i>
                 </a>
-                <div class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block">
+                <div class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block dropdown-menu">
                     <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Wigs</a>
                     <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Perfume</a>
                     <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Hair</a>
