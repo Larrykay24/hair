@@ -16,7 +16,7 @@
             z-index: 1000; /* Ensure dropdown appears above other elements */
             display: none; /* Hide by default */
         }
-        .group:hover .dropdown-menu, .dropdown-menu:hover {
+        .group:hover .dropdown-menu {
             display: block; /* Show on hover */
         }
         .icon-visible {
@@ -307,6 +307,55 @@
     });
 </script>
 <script src="firestore.js"></script>
+<script>
+    // ✅ Get Elements
+    const searchIcon = document.getElementById("searchIcon");
+    const navSearchContainer = document.getElementById("navSearchContainer");
+    const navSearchInput = document.getElementById("navSearchInput");
+
+    const heroSearchInput = document.getElementById("heroSearchInput");
+    const productsContainer = document.getElementById("products");
+
+    // ✅ Toggle Navbar Search Bar
+    searchIcon.addEventListener("click", () => {
+        navSearchContainer.classList.toggle("hidden"); // Show/Hide
+        navSearchInput.focus(); // Focus when opened
+    });
+
+    // ✅ Function to Filter Products
+    function filterProducts(searchText) {
+        searchText = searchText.toLowerCase(); // Convert to lowercase for comparison
+        const productCards = productsContainer.children; // Get all products
+        let found = false; // Flag to check if any product is found
+
+        for (let product of productCards) {
+            const productName = product.querySelector("h2").innerText.toLowerCase();
+            const productDescription = product.querySelector("p").innerText.toLowerCase();
+
+            // Check if the search text matches the product name or description
+            if (productName.includes(searchText) || productDescription.includes(searchText)) {
+                product.style.display = "block";  // Show matching products
+                found = true; // Set flag to true if product is found
+            } else {
+                product.style.display = "none";   // Hide non-matching products
+            }
+        }
+
+        // Show "Product not found" message if no product is found
+        if (!found) {
+            productsContainer.innerHTML = "<p class='text-center text-gray-500'>Product not found</p>";
+        }
+
+        // Show all products if search field is cleared
+        if (searchText === "") {
+            loadProducts();
+        }
+    }
+
+    // ✅ Event Listeners for Both Search Fields
+    navSearchInput.addEventListener("keyup", () => filterProducts(navSearchInput.value));
+    heroSearchInput.addEventListener("keyup", () => filterProducts(heroSearchInput.value));
+</script>
 </body>
 </html>
 
