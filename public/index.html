@@ -16,14 +16,11 @@
             z-index: 1000; /* Ensure dropdown appears above other elements */
             display: none; /* Hide by default */
         }
-        .group:hover .dropdown-menu, .dropdown-menu:hover {
+        .group:hover .dropdown-menu {
             display: block; /* Show on hover */
         }
         .icon-visible {
             display: inline-block;
-            color: white; /* Ensure icons are white */
-        }
-        .bx-search, .bx-cart {
             color: white; /* Ensure icons are white */
         }
     </style>
@@ -203,7 +200,6 @@
                             <h2 class="mt-2 text-lg font-bold">${product.name}</h2>
                             <p class="text-pink-500 font-semibold">₦${product.price},000</p>
                             <p class="text-black font-regular">${product.description}</p>
-                            <button class="mt-2 bg-pink-500 text-white px-4 py-2 rounded-lg add-to-cart">Add to Cart</button>
                         </div>
                     `;
                 });
@@ -265,46 +261,6 @@
             addToCart(product);
         }
     });
-
-    // ✅ Function to Filter Products
-    function filterProducts(searchText) {
-        searchText = searchText.toLowerCase(); // Convert to lowercase for comparison
-        const productCards = productsContainer.children; // Get all products
-        let found = false; // Flag to check if any product is found
-
-        for (let product of productCards) {
-            const productName = product.querySelector("h2").innerText.toLowerCase();
-            const productDescription = product.querySelector("p").innerText.toLowerCase();
-
-            // Check if the search text matches the product name or description
-            if (productName.includes(searchText) || productDescription.includes(searchText)) {
-                product.style.display = "block";  // Show matching products
-                found = true; // Set flag to true if product is found
-            } else {
-                product.style.display = "none";   // Hide non-matching products
-            }
-        }
-
-        // Show "Product not found" message if no product is found
-        if (!found) {
-            productsContainer.innerHTML = "<p class='text-center text-gray-500'>Product not found</p>";
-        }
-
-        // Show all products if search field is cleared
-        if (searchText === "") {
-            loadProducts();
-        }
-    }
-
-    // ✅ Event Listeners for Both Search Fields
-    navSearchInput.addEventListener("keyup", () => filterProducts(navSearchInput.value));
-    heroSearchInput.addEventListener("keyup", () => filterProducts(heroSearchInput.value));
-
-    // ✅ Toggle Navbar Search Bar
-    searchIcon.addEventListener("click", () => {
-        navSearchContainer.classList.toggle("hidden"); // Show/Hide
-        navSearchInput.focus(); // Focus when opened
-    });
 </script>
 <script src="firestore.js"></script>
 <script>
@@ -344,11 +300,6 @@
         // Show "Product not found" message if no product is found
         if (!found) {
             productsContainer.innerHTML = "<p class='text-center text-gray-500'>Product not found</p>";
-        }
-
-        // Show all products if search field is cleared
-        if (searchText === "") {
-            loadProducts();
         }
     }
 
