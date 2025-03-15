@@ -141,6 +141,7 @@
         // ✅ Function to Fetch Product Details from Firestore
         function loadProductDetails(productId) {
             const productDetailsContainer = document.getElementById('productDetails');
+            console.log("Fetching product details for ID:", productId); // Debugging line
 
             db.collection("products").doc(productId).get()
                 .then((doc) => {
