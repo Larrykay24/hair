@@ -34,11 +34,11 @@
             <!-- Navbar Links (Desktop) -->
             <div id="navLinks" class="hidden md:flex space-x-6">
                 <a href="https://hair-taupe.vercel.app" class="hover:underline">Home</a>
-                <div class="relative">
-                    <a href="#" id="shopMenuBtn" class="hover:underline flex items-center">
+                <div class="relative group">
+                    <a href="#" class="hover:underline flex items-center">
                         Shop <i class='bx bx-chevron-down ml-1'></i>
                     </a>
-                    <div id="shopDropdown" class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 dropdown-menu">
+                    <div class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block dropdown-menu">
                         <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Wigs</a>
                         <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Perfume</a>
                         <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Hair</a>
@@ -68,11 +68,11 @@
         <!-- Mobile Menu (Hidden by default) -->
         <div id="mobileMenu" class="hidden flex flex-col items-center space-y-4 py-4 bg-pink-600 md:hidden">
             <a href="#" class="hover:underline">Home</a>
-            <div class="relative">
-                <a href="#" id="mobileShopMenuBtn" class="hover:underline flex items-center">
+            <div class="relative group">
+                <a href="#" class="hover:underline flex items-center">
                     Shop <i class='bx bx-chevron-down ml-1'></i>
                 </a>
-                <div id="mobileShopDropdown" class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 dropdown-menu">
+                <div class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block dropdown-menu">
                     <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Wigs</a>
                     <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Perfume</a>
                     <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Hair</a>
@@ -151,32 +151,9 @@
     <script>
         const menuBtn = document.getElementById('menuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
-        const shopMenuBtn = document.getElementById('shopMenuBtn');
-        const shopDropdown = document.getElementById('shopDropdown');
-        const mobileShopMenuBtn = document.getElementById('mobileShopMenuBtn');
-        const mobileShopDropdown = document.getElementById('mobileShopDropdown');
 
         menuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
-        });
-
-        shopMenuBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            shopDropdown.classList.toggle('hidden');
-        });
-
-        mobileShopMenuBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            mobileShopDropdown.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!shopMenuBtn.contains(e.target) && !shopDropdown.contains(e.target)) {
-                shopDropdown.classList.add('hidden');
-            }
-            if (!mobileShopMenuBtn.contains(e.target) && !mobileShopDropdown.contains(e.target)) {
-                mobileShopDropdown.classList.add('hidden');
-            }
         });
     </script>
 <!-- Firebase SDK -->
