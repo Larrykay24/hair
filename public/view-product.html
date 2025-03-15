@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Product Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .icon-visible {
+            display: inline-block;
+            color: white; /* Ensure icons are white */
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+    <!-- Navbar -->
+    <nav class="bg-pink-500 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="https://hair-taupe.vercel.app" class="text-lg font-bold">Reniksbeautyplace</a>
+            <div class="flex items-center space-x-4">
+                <div class="relative icon-visible">
+                    <i id="searchIcon" class='bx bx-search text-2xl cursor-pointer'></i>
+                </div>
+                <div class="cart-container relative icon-visible">
+                    <i class='bx bx-cart text-2xl cursor-pointer'></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Product Details Section -->
+    <section class="container mx-auto px-4 mt-8">
+        <div id="productDetails" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Product details will be added dynamically here -->
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-pink-500 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <!-- Social Icons -->
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="#" class="text-2xl hover:text-gray-200"><i class='bx bxl-facebook'></i></a>
+                <a href="#" class="text-2xl hover:text-gray-200"><i class='bx bxl-instagram'></i></a>
+                <a href="#" class="text-2xl hover:text-gray-200"><i class='bx bxl-twitter'></i></a>
+            </div>
+            <!-- Links -->
+            <div class="mb-4">
+                <a href="#" class="hover:underline mx-2">Privacy Policy</a> |
+                <a href="#" class="hover:underline mx-2">Terms & Conditions</a>
+            </div>
+            <!-- Copyright & Developer Info -->
+            <p class="text-sm">© 2025 Reniks Beauty Place. All rights reserved.</p>
+            <p class="text-sm text-gray-400">Developed by 
+                <a href="https://codelarry.org.ng" class="hover:underline font-bold text-gray-400">Code Larry</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <script>
+        // ✅ Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
+            authDomain: "hair-vstore.firebaseapp.com",
+            projectId: "hair-vstore",
+            storageBucket: "hair-vstore.appspot.com",
+            messagingSenderId: "172889498629",
+            appId: "1:172889498629:web:5b66a3eec207839a25286c"
+        };
+
+        // ✅ Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ✅ Function to Fetch Product Details from Firestore
+        function loadProductDetails(productId) {
+            const productDetailsContainer = document.getElementById('productDetails');
+
+            db.collection("products").doc(productId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        let product = doc.data();
+
+                        productDetailsContainer.innerHTML = `
+                            <div>
+                                <img src="${product.image}" alt="${product.name}" class="w-full h-96 object-cover rounded-md">
+                            </div>
+                            <div>
+                                <h1 class="text-4xl font-bold">${product.name}</h1>
+                                <p class="text-pink-500 font-semibold text-2xl">₦${product.price},000</p>
+                                <p class="mt-4">${product.description}</p>
+                                <button class="mt-4 bg-pink-500 text-white px-6 py-3 rounded-lg text-lg font-semibold add-to-cart">Add to Cart</button>
+                            </div>
+                        `;
+                    } else {
+                        productDetailsContainer.innerHTML = "<p class='text-center text-gray-500'>Product not found</p>";
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching product details: ", error);
+                });
+        }
+
+        // ✅ Get Product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        // ✅ Load product details when the page loads
+        window.onload = () => {
+            if (productId) {
+                loadProductDetails(productId);
+            } else {
+                document.getElementById('productDetails').innerHTML = "<p class='text-center text-gray-500'>Product not found</p>";
+            }
+        };
+    </script>
+</body>
+</html>
