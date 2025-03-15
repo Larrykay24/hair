@@ -94,12 +94,20 @@
 
                         productDetailsContainer.innerHTML = `
                             <div>
-                                <img src="${product.image}" alt="${product.name}" class="w-full h-96 object-cover rounded-md">
+                                <div class="carousel">
+                                    ${product.images.map(image => `<img src="${image}" alt="${product.name}" class="w-full h-96 object-cover rounded-md">`).join('')}
+                                </div>
                             </div>
                             <div>
                                 <h1 class="text-4xl font-bold">${product.name}</h1>
                                 <p class="text-pink-500 font-semibold text-2xl">₦${product.price},000</p>
                                 <p class="mt-4">${product.description}</p>
+                                <div class="mt-4">
+                                    <label for="color" class="block text-lg font-semibold">Color:</label>
+                                    <select id="color" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                        ${product.variants.colors.map(color => `<option value="${color}">${color}</option>`).join('')}
+                                    </select>
+                                </div>
                                 <button class="mt-4 bg-pink-500 text-white px-6 py-3 rounded-lg text-lg font-semibold add-to-cart">Add to Cart</button>
                             </div>
                         `;
