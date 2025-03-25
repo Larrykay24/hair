@@ -26,6 +26,12 @@
         .bx-search, .bx-cart {
             color: white; /* Ensure icons are white */
         }
+        .carousel img {
+            display: none;
+        }
+        .carousel img.active {
+            display: block;
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -154,8 +160,10 @@
                         productDetailsContainer.innerHTML = `
                             <div>
                                 <div class="carousel">
-                                    ${images.map(image => `<img src="${image}" alt="${product.name}" class="w-full h-96 object-cover rounded-md">`).join('')}
+                                    ${images.map((image, index) => `<img src="${image}" alt="${product.name}" class="w-full h-96 object-cover rounded-md ${index === 0 ? 'active' : ''}">`).join('')}
                                 </div>
+                                <button id="prevBtn" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-2 py-1">Prev</button>
+                                <button id="nextBtn" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-2 py-1">Next</button>
                             </div>
                             <div>
                                 <h1 class="text-4xl font-bold">${product.name}</h1>
@@ -170,6 +178,9 @@
                                 <button class="mt-4 bg-pink-500 text-white px-6 py-3 rounded-lg text-lg font-semibold add-to-cart">Add to Cart</button>
                             </div>
                         `;
+
+                        // Initialize carousel functionality
+                        initCarousel();
                     } else {
                         productDetailsContainer.innerHTML = "<p class='text-center text-gray-500'>Product not found</p>";
                     }
@@ -178,6 +189,24 @@
                     console.error("Error fetching product details: ", error);
                     productDetailsContainer.innerHTML = `<p class='text-center text-gray-500'>Error fetching product details: ${error.message}</p>`;
                 });
+        }
+
+        // ✅ Function to Initialize Carousel
+        function initCarousel() {
+            const carouselImages = document.querySelectorAll('.carousel img');
+            let currentIndex = 0;
+
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                carouselImages[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex === 0) ? carouselImages.length - 1 : currentIndex - 1;
+                carouselImages[currentIndex].classList.add('active');
+            });
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                carouselImages[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex === carouselImages.length - 1) ? 0 : currentIndex + 1;
+                carouselImages[currentIndex].classList.add('active');
+            });
         }
 
         // ✅ Get Product ID from URL
