@@ -179,7 +179,7 @@
                     if (doc.exists) {
                         let product = doc.data();
 
-                        const images = product.images || [];
+                        const images = product.image || [];
                         const colors = product.variants?.colors || [];
 
                         productDetailsContainer.innerHTML = `
