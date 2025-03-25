@@ -26,11 +26,36 @@
         .bx-search, .bx-cart {
             color: white; /* Ensure icons are white */
         }
+        .carousel {
+            position: relative;
+        }
         .carousel img {
             display: none;
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
         }
         .carousel img.active {
             display: block;
+        }
+        .carousel .dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+        .carousel .dot {
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .carousel .dot.active {
+            background-color: pink;
         }
     </style>
 </head>
@@ -160,10 +185,11 @@
                         productDetailsContainer.innerHTML = `
                             <div>
                                 <div class="carousel">
-                                    ${images.map((image, index) => `<img src="${image}" alt="${product.name}" class="w-full h-96 object-cover rounded-md ${index === 0 ? 'active' : ''}">`).join('')}
+                                    ${images.map((image, index) => `<img src="${image}" alt="${product.name}" class="${index === 0 ? 'active' : ''}">`).join('')}
+                                    <div class="dots">
+                                        ${images.map((_, index) => `<div class="dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`).join('')}
+                                    </div>
                                 </div>
-                                <button id="prevBtn" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-2 py-1">Prev</button>
-                                <button id="nextBtn" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-2 py-1">Next</button>
                             </div>
                             <div>
                                 <h1 class="text-4xl font-bold">${product.name}</h1>
@@ -194,18 +220,21 @@
         // ✅ Function to Initialize Carousel
         function initCarousel() {
             const carouselImages = document.querySelectorAll('.carousel img');
+            const dots = document.querySelectorAll('.carousel .dot');
             let currentIndex = 0;
 
-            document.getElementById('prevBtn').addEventListener('click', () => {
+            function updateCarousel(index) {
                 carouselImages[currentIndex].classList.remove('active');
-                currentIndex = (currentIndex === 0) ? carouselImages.length - 1 : currentIndex - 1;
+                dots[currentIndex].classList.remove('active');
+                currentIndex = index;
                 carouselImages[currentIndex].classList.add('active');
-            });
+                dots[currentIndex].classList.add('active');
+            }
 
-            document.getElementById('nextBtn').addEventListener('click', () => {
-                carouselImages[currentIndex].classList.remove('active');
-                currentIndex = (currentIndex === carouselImages.length - 1) ? 0 : currentIndex + 1;
-                carouselImages[currentIndex].classList.add('active');
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    updateCarousel(parseInt(dot.getAttribute('data-index')));
+                });
             });
         }
 
