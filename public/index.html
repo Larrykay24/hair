@@ -155,6 +155,23 @@
     </div>
 </footer>
 
+    <!-- Cart Modal -->
+    <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg w-11/12 md:w-1/2 lg:w-1/3">
+            <h2 class="text-2xl font-bold mb-4">Your Cart</h2>
+            <div id="cartItems" class="space-y-4">
+                <!-- Cart items will be added dynamically here -->
+            </div>
+            <div class="mt-4">
+                <p class="text-lg font-bold">Total: ₦<span id="cartTotal">0</span>,000</p>
+            </div>
+            <div class="mt-4 flex justify-between">
+                <button id="clearCartBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg">Clear Cart</button>
+                <button id="closeCartBtn" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript for Mobile Menu -->
     <script>
         const menuBtn = document.getElementById('menuBtn');
@@ -164,6 +181,11 @@
         const heroSearchInput = document.getElementById('heroSearchInput');
         const searchIcon = document.getElementById('searchIcon');
         const productsContainer = document.getElementById('products');
+        const cartModal = document.getElementById('cartModal');
+        const cartItemsContainer = document.getElementById('cartItems');
+        const cartTotalElement = document.getElementById('cartTotal');
+        const clearCartBtn = document.getElementById('clearCartBtn');
+        const closeCartBtn = document.getElementById('closeCartBtn');
 
         menuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
@@ -226,7 +248,7 @@
                                 <h2 class="mt-2 text-lg font-bold">${product.name}</h2>
                                 <p class="text-pink-500 font-semibold">₦${product.price},000</p>
                                 <p class="text-black font-regular">${product.description}</p>
-                                <button class="mt-2 bg-pink-500 text-white px-4 py-2 rounded-lg add-to-cart">Add to Cart</button>
+                                <button class="mt-2 bg-pink-500 text-white px-4 py-2 rounded-lg add-to-cart" data-id="${productId}">Add to Cart</button>
                             </div>
                         `;
                     });
@@ -246,17 +268,24 @@
 
         // ✅ Select Elements
         const cartIcon = document.querySelector(".bx-cart");
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
         // ✅ Function to Add Product to Cart
         function addToCart(product) {
-            cart.push(product);
+            const existingProduct = cart.find(item => item.id === product.id);
+            if (existingProduct) {
+                existingProduct.quantity += 1;
+            } else {
+                product.quantity = 1;
+                cart.push(product);
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
             updateCartIcon();
         }
 
         // ✅ Function to Update Cart Icon
         function updateCartIcon() {
-            let cartCount = cart.length;
+            let cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
             // Remove old badge before adding a new one
             let existingBadge = document.getElementById("cartCountBadge");
@@ -274,20 +303,103 @@
             }
         }
 
+        // ✅ Function to Render Cart Items
+        function renderCartItems() {
+            cartItemsContainer.innerHTML = "";
+            let total = 0;
+
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                cartItemsContainer.innerHTML += `
+                    <div class="flex justify-between items-center">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
+                        <div class="flex-1 ml-4">
+                            <h3 class="text-lg font-bold">${item.name}</h3>
+                            <p class="text-pink-500 font-semibold">₦${item.price},000</p>
+                            <div class="flex items-center mt-2">
+                                <button class="bg-gray-300 text-gray-700 px-2 py-1 rounded-lg decrease-quantity" data-id="${item.id}">-</button>
+                                <span class="mx-2">${item.quantity}</span>
+                                <button class="bg-gray-300 text-gray-700 px-2 py-1 rounded-lg increase-quantity" data-id="${item.id}">+</button>
+                            </div>
+                        </div>
+                        <button class="bg-red-500 text-white px-2 py-1 rounded-lg remove-item" data-id="${item.id}">Remove</button>
+                    </div>
+                `;
+            });
+
+            cartTotalElement.textContent = total;
+        }
+
+        // ✅ Function to Show Cart Modal
+        function showCartModal() {
+            renderCartItems();
+            cartModal.classList.remove('hidden');
+        }
+
+        // ✅ Function to Hide Cart Modal
+        function hideCartModal() {
+            cartModal.classList.add('hidden');
+        }
+
+        // ✅ Function to Clear Cart
+        function clearCart() {
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartIcon();
+            renderCartItems();
+        }
+
         // Event Listener for "Add to Cart" Buttons
         document.addEventListener("click", function (event) {
             if (event.target.classList.contains("add-to-cart")) {
                 const productElement = event.target.closest(".bg-white");
                 const product = {
+                    id: event.target.getAttribute('data-id'),
                     image: productElement.querySelector("img").src,
                     name: productElement.querySelector("h2").textContent,
-                    price: productElement.querySelector(".text-pink-500").textContent.replace("₦", "").replace(",000", ""),
+                    price: parseInt(productElement.querySelector(".text-pink-500").textContent.replace("₦", "").replace(",000", "")),
                     description: productElement.querySelector(".text-black").textContent,
                 };
 
                 addToCart(product);
+            } else if (event.target.classList.contains("decrease-quantity")) {
+                const productId = event.target.getAttribute('data-id');
+                const product = cart.find(item => item.id === productId);
+                if (product.quantity > 1) {
+                    product.quantity -= 1;
+                } else {
+                    cart = cart.filter(item => item.id !== productId);
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                renderCartItems();
+                updateCartIcon();
+            } else if (event.target.classList.contains("increase-quantity")) {
+                const productId = event.target.getAttribute('data-id');
+                const product = cart.find(item => item.id === productId);
+                product.quantity += 1;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                renderCartItems();
+                updateCartIcon();
+            } else if (event.target.classList.contains("remove-item")) {
+                const productId = event.target.getAttribute('data-id');
+                cart = cart.filter(item => item.id !== productId);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                renderCartItems();
+                updateCartIcon();
             }
         });
+
+        // Event Listener for Cart Icon
+        cartIcon.addEventListener('click', showCartModal);
+
+        // Event Listener for Close Cart Button
+        closeCartBtn.addEventListener('click', hideCartModal);
+
+        // Event Listener for Clear Cart Button
+        clearCartBtn.addEventListener('click', clearCart);
+
+        // ✅ Initialize Cart Icon on Page Load
+        updateCartIcon();
     </script>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
