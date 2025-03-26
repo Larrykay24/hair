@@ -36,6 +36,22 @@
             padding-left: 1rem;
             padding-right: 1rem;
         }
+        #shop .grid {
+            grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+            gap: 1rem; /* Add spacing between items */
+        }
+
+        @media (min-width: 768px) {
+            #shop .grid {
+                grid-template-columns: repeat(3, 1fr); /* 3 columns on tablets */
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #shop .grid {
+                grid-template-columns: repeat(4, 1fr); /* 4 columns on desktops */
+            }
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -78,7 +94,7 @@
 
                 <!-- Cart Icon -->
                 <div class="cart-container relative icon-visible">
-                    <a href="view-cart.html">
+                    <a href="">
                         <i class='bx bx-cart text-2xl cursor-pointer'></i>
                     </a>
                 </div>
@@ -294,9 +310,9 @@
                             <div class="bg-white p-4 shadow-md rounded-lg cursor-pointer">
                                 <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded-md">
                                 <h2 class="mt-2 text-lg font-bold">${product.name}</h2>
-                                <p class="text-pink-500 font-semibold">₦${product.price},000</p>
+                                <p class="text-pink-500 font-semibold">₦${product.price},000.00</p>
                                 <p class="text-black font-regular">${product.description}</p>
-                                <button class="mt-2 bg-pink-500 text-white px-4 py-2 rounded-lg view-product" onclick="viewProduct('${productId}')">View Product</button>
+                                <button class="mt-2 bg-pink-500 text-white px-4 py-2 rounded-lg view-product" onclick="viewProduct('${productId}')">View</button>
                             </div>
                         `;
                     });
