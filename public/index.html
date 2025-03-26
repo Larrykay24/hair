@@ -147,13 +147,15 @@
             </div>
             <!-- Price Range Filter -->
             <div class="mb-4">
-                <label for="minPrice" class="block text-lg font-semibold">Price Range</label>
-                <div class="flex space-x-4">
-                    <input type="number" id="minPrice" placeholder="Min Price" 
-                        class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
-                    <input type="number" id="maxPrice" placeholder="Max Price" 
-                        class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
-                </div>
+                <label for="priceRange" class="block text-lg font-semibold">Price Range</label>
+                <select id="priceRange" 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    <option value="">Select Price Range</option>
+                    <option value="30000-50000">₦30,000 - ₦50,000</option>
+                    <option value="51000-70000">₦51,000 - ₦70,000</option>
+                    <option value="40001-45000">₦40,001 - ₦45,000</option>
+                    <option value="45001-50000">₦45,001 - ₦50,000</option>
+                </select>
             </div>
             <!-- Buttons -->
             <div class="flex justify-between">
@@ -478,8 +480,8 @@
         // ✅ Apply Filter
         applyFilterBtn.addEventListener('click', () => {
             const keyword = document.getElementById('keyword').value.toLowerCase();
-            const minPrice = parseInt(document.getElementById('minPrice').value) || 0;
-            const maxPrice = parseInt(document.getElementById('maxPrice').value) || Infinity;
+            const priceRange = document.getElementById('priceRange').value;
+            const [minPrice, maxPrice] = priceRange ? priceRange.split('-').map(Number) : [0, Infinity];
 
             const productCards = productsContainer.children;
             let found = false;
