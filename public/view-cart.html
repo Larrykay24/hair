@@ -8,6 +8,20 @@
     <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .container {
+            max-width: 100%;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+    </style>
 </head>
 <body class="bg-white text-gray-900">
     <!-- Navbar -->
@@ -25,18 +39,16 @@
 
     <!-- Cart Items Section -->
     <section class="container mx-auto px-4 mt-8">
-        <h1 class="text-2xl font-bold mb-4">Your Cart</h1>
+        <h1 class="text-2xl font-bold mb-4 text-center md:text-left">Your Cart</h1>
         <div id="cartItems" class="space-y-4">
             <!-- Cart items will be dynamically added here -->
         </div>
         <div class="mt-4">
-            <p class="text-lg font-bold">Total: ₦<span id="cartTotal">0</span>,000</p>
+            <p class="text-lg font-bold text-center md:text-left">Total: ₦<span id="cartTotal">0</span>,000</p>
         </div>
-        <div class="mt-4 flex justify-between">
-            <button id="clearCartBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg">Clear Cart</button>
-            <a href="index.html" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Continue Shopping</a>
-        </div>
-        <div class="mt-4 text-center">
+        <div class="mt-4 flex flex-col md:flex-row justify-between">
+            <button id="clearCartBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg mb-4 md:mb-0">Clear Cart</button>
+            <a href="index.html" class="bg-gray-500 text-white px-4 py-2 rounded-lg mb-4 md:mb-0">Continue Shopping</a>
             <button id="proceedToCheckoutBtn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg text-lg font-semibold">
                 Proceed to Checkout
             </button>
