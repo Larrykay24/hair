@@ -255,20 +255,15 @@
 
         // ✅ Function to Add Product to Cart
         document.addEventListener("click", function (event) {
-            if (event.target.classList.contains("add-to-cart")) {
+            if (event.target.closest(".add-to-cart")) {
                 const productElement = event.target.closest("div");
-                const productId = event.target.getAttribute('data-id');
-                const productImage = productElement.querySelector("img").src;
-                const productName = productElement.querySelector("h1").textContent;
-                const productPrice = parseInt(productElement.querySelector(".text-pink-500").textContent.replace("₦", "").replace(",000", ""));
-                const productDescription = productElement.querySelector("p").textContent;
-
+                const productId = event.target.closest(".add-to-cart").dataset.id;
                 const product = {
                     id: productId,
-                    image: productImage,
-                    name: productName,
-                    price: productPrice,
-                    description: productDescription,
+                    image: productElement.querySelector("img").src,
+                    name: productElement.querySelector("h1").textContent,
+                    price: parseInt(productElement.querySelector(".text-pink-500").textContent.replace("₦", "").replace(",000", "")),
+                    description: productElement.querySelector("p").textContent,
                     quantity: 1
                 };
 

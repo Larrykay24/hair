@@ -37,19 +37,19 @@
             padding-right: 1rem;
         }
         #shop .grid {
-            grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+            grid-template-columns: repeat(1, 1fr); /* Default to 1 column */
             gap: 1rem; /* Add spacing between items */
         }
 
         @media (min-width: 768px) {
             #shop .grid {
-                grid-template-columns: repeat(3, 1fr); /* 3 columns on tablets */
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
             }
         }
 
         @media (min-width: 1024px) {
             #shop .grid {
-                grid-template-columns: repeat(4, 1fr); /* 4 columns on desktops */
+                grid-template-columns: repeat(3, 1fr); /* 3 columns on desktops */
             }
         }
 
@@ -219,7 +219,7 @@
                 <i class='bx bx-cart-add text-xl'></i>
             </button>
             <!-- View Product Button -->
-            <button class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+            <button class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold view-product" data-id="product-id">
                 View Product
             </button>
         </div>
@@ -356,7 +356,7 @@
                                 <button class="absolute top-2 right-2 bg-green-500 text-white p-2 rounded-full add-to-cart" data-id="${productId}">
                                     <i class='bx bx-cart-add text-xl'></i>
                                 </button>
-                                <button class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                                <button class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold view-product" data-id="${productId}">
                                     View Product
                                 </button>
                             </div>
@@ -573,7 +573,44 @@
 
         // ✅ Event Listener for "View All Cart" Button
         document.getElementById('viewAllCartBtn').addEventListener('click', () => {
-            alert('View All Cart functionality can be implemented here.');
+            window.location.href = "view-cart.html";
+        });
+
+        // Fix "View Product" navigation
+        document.addEventListener("click", function (event) {
+            if (event.target.closest(".view-product")) {
+                const productId = event.target.closest(".view-product").dataset.id;
+                window.location.href = `view-product.html?id=${productId}`;
+            }
+        });
+
+        // Fix "View All Cart" navigation
+        document.getElementById('viewAllCartBtn').addEventListener('click', () => {
+            window.location.href = "view-cart.html";
+        });
+
+        // Fix "Add to Cart" functionality
+        document.addEventListener("click", function (event) {
+            if (event.target.closest(".add-to-cart")) {
+                const productElement = event.target.closest(".bg-white");
+                const product = {
+                    id: productElement.querySelector(".add-to-cart").dataset.id,
+                    image: productElement.querySelector("img").src,
+                    name: productElement.querySelector("h2").textContent,
+                    price: parseInt(productElement.querySelector(".text-pink-500").textContent.replace("₦", "").replace(",000", "")),
+                    description: productElement.querySelector(".text-black").textContent,
+                    quantity: 1
+                };
+
+                const existingProduct = cart.find(item => item.id === product.id);
+                if (existingProduct) {
+                    existingProduct.quantity += 1;
+                } else {
+                    cart.push(product);
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartIcon();
+            }
         });
     </script>
 <!-- Firebase SDK -->
