@@ -57,20 +57,6 @@
         .carousel .dot.active {
             background-color: pink;
         }
-        .color-circle {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: inline-block;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-        .color-circle.selected {
-            border: 2px solid black;
-        }
-        .color-circle[data-color="none"] {
-            opacity: 0.5; /* Faded appearance for "No Color" */
-        }
         img {
             max-width: 100%;
             height: auto;
@@ -276,10 +262,10 @@
                     return;
                 }
 
-                const productImage = productElement.querySelector("img");
-                const productName = productElement.querySelector("h1");
-                const productPrice = productElement.querySelector(".text-pink-500");
-                const productDescription = productElement.querySelector("p");
+                const productImage = productElement.querySelector("img")?.src;
+                const productName = productElement.querySelector("h1")?.textContent;
+                const productPrice = productElement.querySelector(".text-pink-500")?.textContent;
+                const productDescription = productElement.querySelector("p")?.textContent;
 
                 if (!productImage || !productName || !productPrice || !productDescription) {
                     console.error("One or more product details are missing");
@@ -288,10 +274,10 @@
 
                 const product = {
                     id: event.target.getAttribute('data-id'),
-                    image: productImage.src,
-                    name: productName.textContent,
-                    price: parseInt(productPrice.textContent.replace("₦", "").replace(",000", "")),
-                    description: productDescription.textContent
+                    image: productImage,
+                    name: productName,
+                    price: parseInt(productPrice.replace("₦", "").replace(",000", "")),
+                    description: productDescription
                 };
 
                 const existingProduct = cart.find(item => item.id === product.id);

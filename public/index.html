@@ -94,9 +94,9 @@
 
                 <!-- Cart Icon -->
                 <div class="cart-container relative icon-visible">
-                    <a href="">
+                    
                         <i class='bx bx-cart text-2xl cursor-pointer'></i>
-                    </a>
+                    
                 </div>
             </div>
         </div>
@@ -228,6 +228,9 @@
                 <button id="clearCartBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg">Clear Cart</button>
                 <button id="closeCartBtn" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Close</button>
             </div>
+            <div class="mt-4 text-center">
+                <button id="viewAllCartBtn" class="bg-pink-500 text-white px-4 py-2 rounded-lg">View All Cart</button>
+            </div>
         </div>
     </div>
 
@@ -312,7 +315,7 @@
                                 <h2 class="mt-2 text-lg font-bold">${product.name}</h2>
                                 <p class="text-pink-500 font-semibold">₦${product.price},000.00</p>
                                 <p class="text-black font-regular">${product.description}</p>
-                                <button class="mt-2 bg-pink-500 text-white px-4 py-2 rounded-lg view-product" onclick="viewProduct('${productId}')">View</button>
+                                <button class="mt-2 bg-pink-500 text-white px-4 py-2 rounded-lg view-product" onclick="viewProduct('${productId}')">View Product</button>
                             </div>
                         `;
                     });
@@ -466,9 +469,7 @@
         });
 
         // ✅ Function to Navigate to View Cart Page
-        cartIcon.addEventListener('click', () => {
-            window.location.href = "view-cart.html";
-        });
+        cartIcon.addEventListener('click', showCartModal);
 
         // Event Listener for Cart Icon
         cartIcon.addEventListener('click', showCartModal);
@@ -522,6 +523,11 @@
             }
 
             filterModal.classList.add('hidden'); // Close the modal
+        });
+
+        // ✅ Event Listener for "View All Cart" Button
+        document.getElementById('viewAllCartBtn').addEventListener('click', () => {
+            alert('View All Cart functionality can be implemented here.');
         });
     </script>
 <!-- Firebase SDK -->
