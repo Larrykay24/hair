@@ -134,6 +134,35 @@
     </button>
 
 </section>
+<!-- Filter Modal -->
+<div id="filterModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg w-11/12 md:w-1/2 lg:w-1/3">
+        <h2 class="text-2xl font-bold mb-4">Filter Products</h2>
+        <form id="filterForm">
+            <!-- Keyword Filter -->
+            <div class="mb-4">
+                <label for="keyword" class="block text-lg font-semibold">Keyword</label>
+                <input type="text" id="keyword" placeholder="e.g., wigs, perfume" 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+            </div>
+            <!-- Price Range Filter -->
+            <div class="mb-4">
+                <label for="minPrice" class="block text-lg font-semibold">Price Range</label>
+                <div class="flex space-x-4">
+                    <input type="number" id="minPrice" placeholder="Min Price" 
+                        class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    <input type="number" id="maxPrice" placeholder="Max Price" 
+                        class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+            </div>
+            <!-- Buttons -->
+            <div class="flex justify-between">
+                <button type="button" id="applyFilterBtn" class="bg-pink-500 text-white px-4 py-2 rounded-lg">Apply</button>
+                <button type="button" id="cancelFilterBtn" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- Products Section -->
 <section id="shop" class="container mx-auto px-4 mt-8">
     <h2 class="text-2xl font-bold mb-4 text-center md:text-left">Shop All Products</h2>
@@ -198,6 +227,11 @@
         const cartTotalElement = document.getElementById('cartTotal');
         const clearCartBtn = document.getElementById('clearCartBtn');
         const closeCartBtn = document.getElementById('closeCartBtn');
+        const filterBtn = document.getElementById('filterBtn');
+        const filterModal = document.getElementById('filterModal');
+        const applyFilterBtn = document.getElementById('applyFilterBtn');
+        const cancelFilterBtn = document.getElementById('cancelFilterBtn');
+        const filterForm = document.getElementById('filterForm');
 
         menuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
@@ -429,6 +463,48 @@
 
         // ✅ Initialize Cart Icon on Page Load
         updateCartIcon();
+
+        // ✅ Show Filter Modal
+        filterBtn.addEventListener('click', () => {
+            filterModal.classList.remove('hidden');
+        });
+
+        // ✅ Hide Filter Modal
+        cancelFilterBtn.addEventListener('click', () => {
+            filterModal.classList.add('hidden');
+            loadProducts(); // Reset to show all products
+        });
+
+        // ✅ Apply Filter
+        applyFilterBtn.addEventListener('click', () => {
+            const keyword = document.getElementById('keyword').value.toLowerCase();
+            const minPrice = parseInt(document.getElementById('minPrice').value) || 0;
+            const maxPrice = parseInt(document.getElementById('maxPrice').value) || Infinity;
+
+            const productCards = productsContainer.children;
+            let found = false;
+
+            for (let product of productCards) {
+                const productName = product.querySelector("h2").innerText.toLowerCase();
+                const productPrice = parseInt(product.querySelector(".text-pink-500").innerText.replace("₦", "").replace(",000", ""));
+
+                // Check if product matches the filters
+                if ((keyword === "" || productName.includes(keyword)) &&
+                    productPrice >= minPrice && productPrice <= maxPrice) {
+                    product.style.display = "block";
+                    found = true;
+                } else {
+                    product.style.display = "none";
+                }
+            }
+
+            // Show "Product not found" message if no product matches
+            if (!found) {
+                productsContainer.innerHTML = "<p class='text-center text-gray-500'>No products match your filter</p>";
+            }
+
+            filterModal.classList.add('hidden'); // Close the modal
+        });
     </script>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>

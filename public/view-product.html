@@ -113,10 +113,7 @@
 
             <!-- Icons -->
             <div class="flex items-center space-x-4">
-                <!-- Search Icon -->
-                <div class="relative icon-visible">
-                    <i id="searchIcon" class='bx bx-search text-2xl cursor-pointer'></i>
-                </div>
+               
 
                 <!-- Cart Icon -->
                 <div class="cart-container relative icon-visible">
@@ -293,6 +290,9 @@
                 }
                 localStorage.setItem('cart', JSON.stringify(cart));
                 updateCartIcon();
+
+                // ✅ Show confirmation message
+                alert("Product added to cart successfully!");
             }
         });
 
