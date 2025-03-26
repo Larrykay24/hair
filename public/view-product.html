@@ -202,10 +202,8 @@
                         let product = doc.data();
 
                         productDetailsContainer.innerHTML = `
-                            <div>
+                            <div class="product-container">
                                 <img src="${product.image}" alt="${product.name}" class="w-full h-96 object-cover rounded-md">
-                            </div>
-                            <div>
                                 <h1 class="text-4xl font-bold">${product.name}</h1>
                                 <p class="text-pink-500 font-semibold text-2xl">₦${product.price},000</p>
                                 <p class="mt-4">${product.description}</p>
@@ -244,14 +242,18 @@
         // ✅ Function to Add Product to Cart
         document.addEventListener("click", function (event) {
             if (event.target.classList.contains("add-to-cart")) {
-                const productElement = event.target.closest("div");
+                const productContainer = document.querySelector(".product-container");
+                if (!productContainer) {
+                    console.error("Product container not found");
+                    return;
+                }
 
                 const product = {
                     id: event.target.getAttribute('data-id'),
-                    image: productElement.querySelector("img").src,
-                    name: productElement.querySelector("h1").textContent,
-                    price: parseInt(productElement.querySelector(".text-pink-500").textContent.replace("₦", "").replace(",000", "")),
-                    description: productElement.querySelector("p").textContent
+                    image: productContainer.querySelector("img").src,
+                    name: productContainer.querySelector("h1").textContent,
+                    price: parseInt(productContainer.querySelector(".text-pink-500").textContent.replace("₦", "").replace(",000", "")),
+                    description: productContainer.querySelector("p").textContent
                 };
 
                 const existingProduct = cart.find(item => item.id === product.id);
