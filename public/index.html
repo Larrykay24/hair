@@ -315,7 +315,12 @@
                                 <h2 class="mt-2 text-lg font-bold">${product.name}</h2>
                                 <p class="text-pink-500 font-semibold">₦${product.price},000.00</p>
                                 <p class="text-black font-regular">${product.description}</p>
-                                <button class="mt-2 bg-pink-500 text-white px-4 py-2 rounded-lg view-product" onclick="viewProduct('${productId}')">View Product</button>
+                                <div class="flex justify-between items-center mt-2">
+                                    <button class="bg-pink-500 text-white px-4 py-2 rounded-lg view-product" onclick="viewProduct('${productId}')">View Product</button>
+                                    <button class="bg-green-500 text-white px-4 py-2 rounded-lg add-to-cart" data-id="${productId}">
+                                        <i class='bx bx-cart-add'></i> Add
+                                    </button>
+                                </div>
                             </div>
                         `;
                     });

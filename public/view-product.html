@@ -257,62 +257,48 @@
         document.addEventListener("click", function (event) {
             if (event.target.classList.contains("add-to-cart")) {
                 const productElement = event.target.closest("div");
-                if (!productElement) {
-                    console.error("Product element not found");
-                    return;
-                }
-
-                const productImage = productElement.querySelector("img")?.src;
-                const productName = productElement.querySelector("h1")?.textContent;
-                const productPrice = productElement.querySelector(".text-pink-500")?.textContent;
-                const productDescription = productElement.querySelector("p")?.textContent;
-
-                if (!productImage || !productName || !productPrice || !productDescription) {
-                    console.error("One or more product details are missing");
-                    return;
-                }
+                const productId = event.target.getAttribute('data-id');
+                const productImage = productElement.querySelector("img").src;
+                const productName = productElement.querySelector("h1").textContent;
+                const productPrice = parseInt(productElement.querySelector(".text-pink-500").textContent.replace("₦", "").replace(",000", ""));
+                const productDescription = productElement.querySelector("p").textContent;
 
                 const product = {
-                    id: event.target.getAttribute('data-id'),
+                    id: productId,
                     image: productImage,
                     name: productName,
-                    price: parseInt(productPrice.replace("₦", "").replace(",000", "")),
-                    description: productDescription
+                    price: productPrice,
+                    description: productDescription,
+                    quantity: 1
                 };
 
                 const existingProduct = cart.find(item => item.id === product.id);
                 if (existingProduct) {
                     existingProduct.quantity += 1;
                 } else {
-                    product.quantity = 1;
                     cart.push(product);
                 }
+
                 localStorage.setItem('cart', JSON.stringify(cart));
                 updateCartIcon();
-
-                // ✅ Show notification instead of alert
                 showNotification("Product added to cart successfully!");
             }
         });
 
         // ✅ Function to Update Cart Icon
         function updateCartIcon() {
-            let cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            let cartBadge = document.getElementById("cartCountBadge");
 
-            // Remove old badge before adding a new one
-            let existingBadge = document.getElementById("cartCountBadge");
-            if (existingBadge) {
-                existingBadge.remove();
-            }
-
-            // Show count only if cart has items
-            if (cartCount > 0) {
-                let cartBadge = document.createElement("span");
+            if (!cartBadge) {
+                cartBadge = document.createElement("span");
                 cartBadge.id = "cartCountBadge";
-                cartBadge.textContent = cartCount;
                 cartBadge.className = "absolute top-0 right-0 transform translate-x-2 -translate-y-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full";
                 cartIcon.parentNode.appendChild(cartBadge);
             }
+
+            cartBadge.textContent = cartCount > 0 ? cartCount : '';
+            if (cartCount === 0) cartBadge.remove();
         }
 
         // ✅ Initialize Cart Icon on Page Load

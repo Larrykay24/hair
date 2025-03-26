@@ -46,11 +46,15 @@
         <div class="mt-4">
             <p class="text-lg font-bold text-center md:text-left">Total: ₦<span id="cartTotal">0</span>,000</p>
         </div>
-        <div class="mt-4 flex flex-col md:flex-row justify-between">
-            <button id="clearCartBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg mb-4 md:mb-0">Clear Cart</button>
-            <a href="index.html" class="bg-gray-500 text-white px-4 py-2 rounded-lg mb-4 md:mb-0">Continue Shopping</a>
-            <button id="proceedToCheckoutBtn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg text-lg font-semibold">
-                Proceed to Checkout
+        <div class="mt-4 flex flex-col md:flex-row justify-center md:justify-between items-center space-y-4 md:space-y-0">
+            <button id="clearCartBtn" class="flex items-center bg-red-500 text-white px-4 py-2 rounded-lg">
+                <i class="bx bx-trash mr-2"></i> Clear Cart
+            </button>
+            <a href="index.html" class="flex items-center bg-gray-500 text-white px-4 py-2 rounded-lg">
+                <i class="bx bx-shopping-bag mr-2"></i> Continue Shopping
+            </a>
+            <button id="proceedToCheckoutBtn" class="flex items-center bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg text-lg font-semibold">
+                <i class="bx bx-check-circle mr-2"></i> Proceed to Checkout
             </button>
         </div>
     </section>
