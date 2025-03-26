@@ -80,9 +80,25 @@
             padding-left: 1rem;
             padding-right: 1rem;
         }
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            z-index: 1000;
+            display: none; /* Hidden by default */
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">
+    <!-- Notification -->
+    <div id="notification" class="notification">Product added to cart successfully!</div>
     <!-- Navbar -->
     <nav class="bg-pink-500 text-white p-4">
         <div class="container mx-auto flex justify-between items-center">
@@ -202,8 +218,10 @@
                         let product = doc.data();
 
                         productDetailsContainer.innerHTML = `
-                            <div class="product-container">
+                            <div>
                                 <img src="${product.image}" alt="${product.name}" class="w-full h-96 object-cover rounded-md">
+                            </div>
+                            <div>
                                 <h1 class="text-4xl font-bold">${product.name}</h1>
                                 <p class="text-pink-500 font-semibold text-2xl">₦${product.price},000</p>
                                 <p class="mt-4">${product.description}</p>
@@ -238,22 +256,42 @@
         const menuBtn = document.getElementById('menuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const notification = document.getElementById('notification');
+
+        // ✅ Function to Show Notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000); // Hide after 3 seconds
+        }
 
         // ✅ Function to Add Product to Cart
         document.addEventListener("click", function (event) {
             if (event.target.classList.contains("add-to-cart")) {
-                const productContainer = document.querySelector(".product-container");
-                if (!productContainer) {
-                    console.error("Product container not found");
+                const productElement = event.target.closest("div");
+                if (!productElement) {
+                    console.error("Product element not found");
+                    return;
+                }
+
+                const productImage = productElement.querySelector("img");
+                const productName = productElement.querySelector("h1");
+                const productPrice = productElement.querySelector(".text-pink-500");
+                const productDescription = productElement.querySelector("p");
+
+                if (!productImage || !productName || !productPrice || !productDescription) {
+                    console.error("One or more product details are missing");
                     return;
                 }
 
                 const product = {
                     id: event.target.getAttribute('data-id'),
-                    image: productContainer.querySelector("img").src,
-                    name: productContainer.querySelector("h1").textContent,
-                    price: parseInt(productContainer.querySelector(".text-pink-500").textContent.replace("₦", "").replace(",000", "")),
-                    description: productContainer.querySelector("p").textContent
+                    image: productImage.src,
+                    name: productName.textContent,
+                    price: parseInt(productPrice.textContent.replace("₦", "").replace(",000", "")),
+                    description: productDescription.textContent
                 };
 
                 const existingProduct = cart.find(item => item.id === product.id);
@@ -266,8 +304,8 @@
                 localStorage.setItem('cart', JSON.stringify(cart));
                 updateCartIcon();
 
-                // ✅ Show confirmation message
-                alert("Product added to cart successfully!");
+                // ✅ Show notification instead of alert
+                showNotification("Product added to cart successfully!");
             }
         });
 
