@@ -209,21 +209,9 @@
                                 <h1 class="text-4xl font-bold">${product.name}</h1>
                                 <p class="text-pink-500 font-semibold text-2xl">₦${product.price},000</p>
                                 <p class="mt-4">${product.description}</p>
-                                <div class="mt-4">
-                                    <label class="block text-lg font-semibold">Color:</label>
-                                    <div id="colorSelection">
-                                        <div class="color-circle" style="background-color: #FF0000;" data-color="#FF0000"></div>
-                                        <div class="color-circle" style="background-color: #00FF00;" data-color="#00FF00"></div>
-                                        <div class="color-circle" style="background-color: #0000FF;" data-color="#0000FF"></div>
-                                        <div class="color-circle" style="background-color: #E5E7EB; cursor: not-allowed;" data-color="none" title="No Color"></div>
-                                    </div>
-                                </div>
                                 <button class="mt-4 bg-pink-500 text-white px-6 py-3 rounded-lg text-lg font-semibold add-to-cart" data-id="${productId}">Add to Cart</button>
                             </div>
                         `;
-
-                        // Initialize color selection functionality
-                        initColorSelection();
                     } else {
                         productDetailsContainer.innerHTML = "<p class='text-center text-gray-500'>Product not found</p>";
                     }
@@ -232,18 +220,6 @@
                     console.error("Error fetching product details: ", error);
                     productDetailsContainer.innerHTML = `<p class='text-center text-gray-500'>Error fetching product details: ${error.message}</p>`;
                 });
-        }
-
-        // ✅ Function to Initialize Color Selection
-        function initColorSelection() {
-            const colorCircles = document.querySelectorAll('.color-circle');
-
-            colorCircles.forEach(circle => {
-                circle.addEventListener('click', () => {
-                    document.querySelector('.color-circle.selected')?.classList.remove('selected');
-                    circle.classList.add('selected');
-                });
-            });
         }
 
         // ✅ Get Product ID from URL
@@ -268,7 +244,7 @@
         // ✅ Function to Add Product to Cart
         document.addEventListener("click", function (event) {
             if (event.target.classList.contains("add-to-cart")) {
-                const productElement = event.target.closest(".add-to-cart").parentNode;
+                const productElement = event.target.closest("div");
 
                 const product = {
                     id: event.target.getAttribute('data-id'),
