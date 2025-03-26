@@ -80,6 +80,43 @@
             z-index: 1000;
             display: none; /* Hidden by default */
         }
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets and above */
+            }
+        }
+        @media (max-width: 768px) {
+            nav .container {
+                flex-wrap: wrap;
+            }
+            nav #navLinks {
+                display: none; /* Hide desktop links on mobile */
+            }
+            nav #mobileMenu {
+                display: flex;
+                flex-direction: column;
+            }
+            .add-to-cart {
+                width: 100%; /* Full width for better usability */
+                margin-top: 1rem;
+            }
+            .notification {
+                font-size: 14px; /* Adjust font size for smaller screens */
+            }
+            .text-4xl {
+                font-size: 1.5rem; /* Adjust heading size for mobile */
+            }
+            .text-2xl {
+                font-size: 1.25rem; /* Adjust subheading size for mobile */
+            }
+            .mt-4 {
+                margin-top: 1rem;
+            }
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -146,7 +183,7 @@
 
     <!-- Product Details Section -->
     <section class="container mx-auto px-4 mt-8">
-        <div id="productDetails" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div id="productDetails" class="grid grid-cols-1 gap-6">
             <!-- Product details will be added dynamically here -->
         </div>
     </section>
