@@ -75,29 +75,6 @@
                 margin-bottom: 0.5rem; /* Add spacing between links */
             }
         }
-        nav .container {
-            flex-wrap: wrap;
-        }
-        nav #navLinks {
-            display: none; /* Hide links by default */
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        nav #navLinks a {
-            margin-bottom: 0.5rem;
-        }
-        nav #menuBtn {
-            display: block; /* Show menu button on mobile */
-        }
-        @media (min-width: 768px) {
-            nav #navLinks {
-                display: flex; /* Show links on larger screens */
-                flex-direction: row;
-            }
-            nav #menuBtn {
-                display: none; /* Hide menu button on larger screens */
-            }
-        }
     </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -633,21 +610,6 @@
                 }
                 localStorage.setItem('cart', JSON.stringify(cart));
                 updateCartIcon();
-            }
-        });
-
-        // Toggle mobile menu visibility
-        menuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('hidden');
-        });
-
-        // Ensure mobile responsiveness for product grid
-        window.addEventListener('resize', () => {
-            const shopGrid = document.getElementById('shop');
-            if (window.innerWidth < 768) {
-                shopGrid.classList.add('grid-cols-1');
-            } else {
-                shopGrid.classList.remove('grid-cols-1');
             }
         });
     </script>
