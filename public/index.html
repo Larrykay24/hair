@@ -68,7 +68,9 @@
 
                 <!-- Cart Icon -->
                 <div class="cart-container relative icon-visible">
-                    <i class='bx bx-cart text-2xl cursor-pointer'></i>
+                    <a href="view-cart.html">
+                        <i class='bx bx-cart text-2xl cursor-pointer'></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -399,6 +401,11 @@
                 renderCartItems();
                 updateCartIcon();
             }
+        });
+
+        // ✅ Function to Navigate to View Cart Page
+        cartIcon.addEventListener('click', () => {
+            window.location.href = "view-cart.html";
         });
 
         // Event Listener for Cart Icon
