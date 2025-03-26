@@ -185,7 +185,18 @@
 <section id="shop" class="container mx-auto px-4 mt-8">
     <h2 class="text-2xl font-bold mb-4 text-center md:text-left">Shop All Products</h2>
     <div id="products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <!-- Products will be added dynamically here -->
+        <!-- Example Product Card -->
+        <div class="bg-white p-4 shadow-md rounded-lg relative">
+            <img src="product-image.jpg" alt="Product Name" class="w-full h-48 object-cover rounded-md">
+            <h2 class="mt-2 text-lg font-bold">Product Name</h2>
+            <p class="text-pink-500 font-semibold">₦10,000.00</p>
+            <p class="text-black font-regular">Product description goes here.</p>
+            <!-- Add Cart Icon -->
+            <button class="absolute top-2 right-2 bg-green-500 text-white p-2 rounded-full add-to-cart" data-id="product-id">
+                <i class='bx bx-cart-add text-xl'></i>
+            </button>
+        </div>
+        <!-- ...other product cards... -->
     </div>
 </section>
 <!-- Footer Section -->
@@ -229,7 +240,7 @@
                 <button id="closeCartBtn" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Close</button>
             </div>
             <div class="mt-4 text-center">
-                <button onclick="window.location.href='view-cart.html'" class="bg-pink-500 text-white px-4 py-2 rounded-lg">View All Cart</button>
+                <button id="viewAllCartBtn" class="bg-pink-500 text-white px-4 py-2 rounded-lg">View All Cart</button>
             </div>
         </div>
     </div>
@@ -420,6 +431,9 @@
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartIcon();
             renderCartItems();
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartIcon();
+            renderCartItems();
         }
 
         // Event Listener for "Add to Cart" Buttons
@@ -525,6 +539,11 @@
             }
 
             filterModal.classList.add('hidden'); // Close the modal
+        });
+
+        // ✅ Event Listener for "View All Cart" Button
+        document.getElementById('viewAllCartBtn').addEventListener('click', () => {
+            alert('View All Cart functionality can be implemented here.');
         });
     </script>
 <!-- Firebase SDK -->
