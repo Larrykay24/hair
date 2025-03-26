@@ -81,6 +81,14 @@
                 display: flex; /* Ensure mobile menu is visible */
                 flex-direction: column;
             }
+            .add-to-cart {
+                position: static; /* Ensure proper placement on mobile */
+                margin-top: 1rem;
+                width: 100%; /* Full width for better usability */
+            }
+            .view-product {
+                margin-top: 0.5rem; /* Add spacing between buttons */
+            }
         }
     </style>
 </head>
@@ -222,8 +230,8 @@
             <p class="text-pink-500 font-semibold">₦10,000.00</p>
             <p class="text-black font-regular">Product description goes here.</p>
             <!-- Add Cart Icon -->
-            <button class="absolute top-2 right-2 bg-green-500 text-white p-2 rounded-full add-to-cart" data-id="product-id">
-                <i class='bx bx-cart-add text-xl'></i>
+            <button class="bg-green-500 text-white p-2 rounded-lg add-to-cart" data-id="product-id">
+                <i class='bx bx-cart-add text-xl'></i> Add to Cart
             </button>
             <!-- View Product Button -->
             <button class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold view-product" data-id="product-id">
