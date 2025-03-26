@@ -52,6 +52,29 @@
                 grid-template-columns: repeat(4, 1fr); /* 4 columns on desktops */
             }
         }
+
+        @media (max-width: 768px) {
+            #shop .grid {
+                grid-template-columns: repeat(1, 1fr); /* 1 column on mobile */
+            }
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+            nav .container {
+                flex-wrap: wrap; /* Ensure navbar items stack on smaller screens */
+            }
+            nav .cart-container, nav #navLinks {
+                margin-top: 1rem; /* Add spacing for stacked items */
+            }
+            nav #navLinks {
+                flex-direction: column; /* Stack links vertically */
+                align-items: flex-start;
+            }
+            nav #navLinks a {
+                margin-bottom: 0.5rem; /* Add spacing between links */
+            }
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -195,6 +218,10 @@
             <button class="absolute top-2 right-2 bg-green-500 text-white p-2 rounded-full add-to-cart" data-id="product-id">
                 <i class='bx bx-cart-add text-xl'></i>
             </button>
+            <!-- View Product Button -->
+            <button class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                View Product
+            </button>
         </div>
         <!-- ...other product cards... -->
     </div>
@@ -328,6 +355,9 @@
                                 <p class="text-black font-regular">${product.description}</p>
                                 <button class="absolute top-2 right-2 bg-green-500 text-white p-2 rounded-full add-to-cart" data-id="${productId}">
                                     <i class='bx bx-cart-add text-xl'></i>
+                                </button>
+                                <button class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                                    View Product
                                 </button>
                             </div>
                         `;
