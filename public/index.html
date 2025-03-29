@@ -96,6 +96,9 @@
             .hero-section a {
                 font-size: 0.875rem; /* Adjust button size */
             }
+            .cart-icon span {
+                font-size: 0.75rem; /* Smaller cart count on mobile */
+            }
         }
 
         /* FAQ Section Styling */
@@ -130,6 +133,39 @@
             font-size: 0.875rem;
             color: #a0aec0; /* Lighter text for answers */
         }
+        /* Product card styling */
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #2d3748; /* Dark background */
+            color: #f7fafc;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .product-card h2 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+        .product-card p {
+            margin: 0.5rem 0;
+        }
+        .product-card .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        .product-card button {
+            flex: 1;
+            margin: 0 0.25rem;
+        }
     </style>
     <script>
         // Initialize Firestore
@@ -150,17 +186,19 @@
                     const product = doc.data();
                     const productId = doc.id;
                     const productCard = `
-                        <div class="glass p-4 rounded-lg relative">
-                            <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg">
-                            <h2 class="mt-4 text-lg font-semibold">${product.name}</h2>
+                        <div class="product-card p-4">
+                            <img src="${product.image}" alt="${product.name}">
+                            <h2>${product.name}</h2>
                             <p class="text-pink-500 font-semibold">₦${product.price},000.00</p>
-                            <p class="text-sm text-gray-600">${product.description}</p>
-                            <button class="absolute top-2 right-2 bg-green-500 text-white p-2 rounded-full hover:bg-green-600" onclick="addToCart('${productId}')">
-                                <i class='bx bx-cart-add text-xl'></i>
-                            </button>
-                            <button class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold" onclick="viewProduct('${productId}')">
-                                View Product
-                            </button>
+                            <p class="text-sm text-gray-400">${product.description}</p>
+                            <div class="actions">
+                                <button class="add-to-cart bg-green-500 text-white px-4 py-2 rounded-lg" onclick="addToCart('${productId}')">
+                                    Add to Cart
+                                </button>
+                                <button class="view-product bg-blue-500 text-white px-4 py-2 rounded-lg" onclick="viewProduct('${productId}')">
+                                    View
+                                </button>
+                            </div>
                         </div>
                     `;
                     productGrid.innerHTML += productCard;
@@ -176,7 +214,7 @@
         function addToCart(productId) {
             cart.push(productId);
             updateCartCount();
-            openCartModal();
+            alert('Product added to cart!');
         }
 
         // Update cart count
