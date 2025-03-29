@@ -243,6 +243,11 @@
         document.querySelector('.scroll-to-top').addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+
+        // Proceed to Checkout
+        document.getElementById('proceedToCheckoutBtn').addEventListener('click', () => {
+            window.location.href = "checkout.html";
+        });
     </script>
 </body>
 </html>
