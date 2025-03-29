@@ -2,164 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reniks Beauty Saloon</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #1a202c; /* Dark mode background */
-            color: #f7fafc; /* Light text for dark mode */
-            overflow-x: hidden; /* Prevent horizontal scrolling */
-        }
-        .glass {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .dark-mode {
-            background-color: #1a202c;
-            color: #f7fafc;
-        }
-        .btn-pink {
-            background-color: #ec4899; /* Pink button */
-            color: #ffffff;
-        }
-        .btn-pink:hover {
-            background-color: #db2777; /* Darker pink on hover */
-        }
-        .btn-glow {
-            box-shadow: none; /* Remove glow effect */
+            background-color: #f7fafc;
+            color: #1a202c;
         }
         .hero-section {
             background-image: url('https://static9.depositphotos.com/1441511/1130/i/450/depositphotos_11307116-stock-photo-woman-with-healthy-long-hair.jpg');
             background-size: cover;
             background-position: center;
-            position: relative;
-            overflow: hidden; /* Prevent content overflow */
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
         }
         .hero-overlay {
             background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-        }
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            background-color: #2d3748; /* Dark dropdown */
-            color: #f7fafc;
-            border-radius: 0.5rem;
-            z-index: 1000;
-            transition: none; /* Remove hover animations */
-        }
-        .group:hover .dropdown-menu {
-            display: block;
-        }
-        .add-to-cart {
-            background-color: #38a169; /* Green */
-            color: #ffffff;
-        }
-        .add-to-cart:hover {
-            background-color: #2f855a; /* Darker green */
-        }
-        .view-product {
-            background-color: #4299e1; /* Blue */
-            color: #ffffff;
-        }
-        .view-product:hover {
-            background-color: #3182ce; /* Darker blue */
-        }
-        .cart-icon {
-            position: relative;
-        }
-        .cart-icon span {
-            background-color: #ec4899; /* Pink */
-            color: #ffffff;
-            animation: none; /* Remove any animations */
-        }
-        .filter-modal {
-            background-color: #2d3748; /* Dark modal */
-            color: #f7fafc;
-            animation: none; /* Remove modal animations */
-        }
-        /* Responsive styles for mobile */
-        @media (max-width: 768px) {
-            #products {
-                grid-template-columns: repeat(1, 1fr); /* Single column on mobile */
-            }
-            .hero-section h1 {
-                font-size: 1.75rem; /* Adjust hero heading size */
-            }
-            .hero-section p {
-                font-size: 1rem; /* Adjust hero subheading size */
-            }
-            .hero-section a {
-                font-size: 0.875rem; /* Adjust button size */
-            }
-            .cart-icon span {
-                font-size: 0.75rem; /* Smaller cart count on mobile */
-            }
-        }
-
-        /* FAQ Section Styling */
-        .faq-section {
-            background-color: #2d3748; /* Dark background */
-            color: #f7fafc; /* Light text */
-            padding: 2rem 1rem;
+            padding: 2rem;
             border-radius: 0.5rem;
         }
-        .faq-section h2 {
-            font-size: 1.75rem;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        .faq-section details {
-            background-color: #1a202c; /* Slightly darker background for details */
-            border: 1px solid #4a5568; /* Border for details */
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            padding: 1rem;
-        }
-        .faq-section details summary {
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .faq-section details summary:hover {
-            color: #ec4899; /* Pink hover effect */
-        }
-        .faq-section details p {
-            margin-top: 0.5rem;
-            font-size: 0.875rem;
-            color: #a0aec0; /* Lighter text for answers */
-        }
-        /* Product card styling */
         .product-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background-color: #2d3748; /* Dark background */
-            color: #f7fafc;
+            background-color: white;
             border-radius: 0.5rem;
-            overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: scale(1.05);
         }
         .product-card img {
             width: 100%;
             height: 200px;
             object-fit: cover;
-            border-radius: 0.5rem;
         }
         .product-card h2 {
             font-size: 1.25rem;
             font-weight: bold;
-            margin-top: 0.5rem;
+            margin: 0.5rem 0;
         }
         .product-card p {
             margin: 0.5rem 0;
@@ -174,8 +62,45 @@
             margin: 0 0.25rem;
         }
     </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-overlay">
+            <h1 class="text-4xl font-bold">Welcome to Reniks Beauty Saloon</h1>
+            <p class="text-lg mt-2">Discover the best wigs, extensions, and beauty products.</p>
+            <a href="#shop" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg mt-4 inline-block text-lg font-semibold">
+                Shop Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="shop" class="p-6">
+        <h2 class="text-2xl font-bold text-center mb-4">Shop All Products</h2>
+        <div id="products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center py-6">
+        <p>&copy; 2023 Reniks Beauty Saloon. All rights reserved.</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // Initialize Firestore
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
+            authDomain: "hair-vstore.firebaseapp.com",
+            projectId: "hair-vstore",
+            storageBucket: "hair-vstore.appspot.com",
+            messagingSenderId: "172889498629",
+            appId: "1:172889498629:web:5b66a3eec207839a25286c"
+        };
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
         // Fetch products from Firestore and render them
@@ -191,20 +116,17 @@
                 }
                 querySnapshot.forEach((doc) => {
                     const product = doc.data();
-                    const productId = doc.id;
                     const productCard = `
                         <div class="product-card">
                             <img src="${product.image}" alt="${product.name}">
-                            <h2>${product.name}</h2>
-                            <p class="text-pink-500 font-semibold">₦${product.price},000.00</p>
-                            <p class="text-sm text-gray-400">${product.description}</p>
-                            <div class="actions">
-                                <button class="add-to-cart bg-green-500 text-white px-4 py-2 rounded-lg" onclick="addToCart('${productId}')">
-                                    Add to Cart
-                                </button>
-                                <button class="view-product bg-blue-500 text-white px-4 py-2 rounded-lg" onclick="viewProduct('${productId}')">
-                                    View
-                                </button>
+                            <div class="p-4">
+                                <h2>${product.name}</h2>
+                                <p class="text-pink-500 font-semibold">₦${product.price},000.00</p>
+                                <p class="text-sm text-gray-400">${product.description}</p>
+                                <div class="actions">
+                                    <button class="bg-green-500 text-white px-4 py-2 rounded-lg">Add to Cart</button>
+                                    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg">View</button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -216,231 +138,8 @@
             }
         }
 
-        // Add product to cart
-        const cart = [];
-        function addToCart(productId) {
-            cart.push(productId);
-            updateCartCount();
-            alert('Product added to cart!');
-        }
-
-        // Update cart count
-        function updateCartCount() {
-            const cartCount = document.getElementById('cart-count');
-            cartCount.textContent = cart.length;
-        }
-
-        // Open cart modal
-        function openCartModal() {
-            const cartModal = document.getElementById('cart-modal');
-            cartModal.classList.remove('hidden');
-        }
-
-        // Close cart modal
-        function closeCartModal() {
-            const cartModal = document.getElementById('cart-modal');
-            cartModal.classList.add('hidden');
-        }
-
-        // Search functionality
-        function searchProducts() {
-            const searchInput = document.getElementById('search-input').value.toLowerCase();
-            const productCards = document.querySelectorAll('#product-grid > div');
-            productCards.forEach(card => {
-                const productName = card.querySelector('h2').textContent.toLowerCase();
-                card.style.display = productName.includes(searchInput) ? 'block' : 'none';
-            });
-        }
-
-        // View Product (placeholder functionality)
-        function viewProduct(productId) {
-            alert(`View details for product ID: ${productId}`);
-            // Implement product detail modal or navigation here
-        }
-
         // Load products on page load
         document.addEventListener('DOMContentLoaded', loadProducts);
-    </script>
-</head>
-<body class="dark-mode">
-    <!-- Firebase Configuration -->
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
-            authDomain: "hair-vstore.firebaseapp.com",
-            projectId: "hair-vstore",
-            storageBucket: "hair-vstore.appspot.com",
-            messagingSenderId: "172889498629",
-            appId: "1:172889498629:web:5b66a3eec207839a25286c"
-        };
-        firebase.initializeApp(firebaseConfig);
-    </script>
-
-    <!-- Hero Section -->
-    <section class="hero-section text-center text-white py-20">
-        <div class="hero-overlay p-6 rounded-lg">
-            <h1 class="text-4xl font-bold">Find Your Perfect Hair</h1>
-            <p class="text-lg mt-2">Quality Wigs, Extensions, and Beauty Products</p>
-            <a href="#shop" class="btn-pink px-6 py-3 rounded-lg mt-4 inline-block text-lg font-semibold">
-                Shop Now
-            </a>
-        </div>
-    </section>
-
-    <!-- Navbar -->
-    <nav class="flex justify-between items-center px-6 py-4 bg-gray-800 shadow-md sticky top-0 z-50">
-        <div class="text-2xl font-bold text-pink-500">Reniks</div>
-        <div class="flex items-center space-x-4">
-            <input id="search-input" type="text" placeholder="Search..." class="px-4 py-2 border rounded-full focus:outline-none">
-            <i class="bx bx-search text-xl text-white"></i>
-            <div class="cart-icon relative">
-                <i class="bx bx-cart text-xl text-white cursor-pointer"></i>
-                <span id="cart-count" class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full px-2">0</span>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Filter Modal -->
-    <div id="filterModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="filter-modal p-6 rounded-lg w-11/12 md:w-1/2 lg:w-1/3">
-            <h2 class="text-2xl font-bold mb-4">Filter Products</h2>
-            <form id="filterForm">
-                <!-- Keyword Filter -->
-                <div class="mb-4">
-                    <label for="keyword" class="block text-lg font-semibold">Keyword</label>
-                    <input type="text" id="keyword" placeholder="e.g., wigs, perfume" class="w-full px-4 py-2 border rounded-lg focus:outline-none">
-                </div>
-                <!-- Price Range Filter -->
-                <div class="mb-4">
-                    <label for="priceRange" class="block text-lg font-semibold">Price Range</label>
-                    <select id="priceRange" class="w-full px-4 py-2 border rounded-lg focus:outline-none">
-                        <option value="">Select Price Range</option>
-                        <option value="30000-50000">₦30,000 - ₦50,000</option>
-                        <option value="51000-70000">₦51,000 - ₦70,000</option>
-                    </select>
-                </div>
-                <!-- Buttons -->
-                <div class="flex justify-between">
-                    <button type="button" id="applyFilterBtn" class="btn-pink px-4 py-2 rounded-lg">Apply</button>
-                    <button type="button" id="cancelFilterBtn" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Cart Modal -->
-    <div id="cartModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="filter-modal p-6 rounded-lg w-11/12 md:w-1/2 lg:w-1/3">
-            <h2 class="text-2xl font-bold mb-4">Your Cart</h2>
-            <div id="cartItems" class="space-y-4">
-                <!-- Cart items will be dynamically added here -->
-            </div>
-            <div class="mt-4">
-                <p class="text-lg font-bold">Total: ₦<span id="cartTotal">0</span>,000</p>
-            </div>
-            <div class="mt-4 flex justify-between">
-                <button id="clearCartBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg">Clear Cart</button>
-                <button id="closeCartBtn" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Products Section -->
-    <section id="shop" class="p-6">
-        <h2 class="text-2xl font-bold text-center mb-4">Shop All Products</h2>
-        <div id="products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Products will be dynamically loaded here -->
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section class="faq-section">
-        <h2>Frequently Asked Questions</h2>
-        <div>
-            <details>
-                <summary>What is your return policy?</summary>
-                <p>We offer a 30-day return policy for unused products. Please ensure the product is in its original packaging.</p>
-            </details>
-            <details>
-                <summary>Do you offer international shipping?</summary>
-                <p>Yes, we ship worldwide. Shipping fees and delivery times vary based on your location.</p>
-            </details>
-            <details>
-                <summary>How can I track my order?</summary>
-                <p>Once your order is shipped, you will receive a tracking number via email to monitor your delivery.</p>
-            </details>
-            <details>
-                <summary>What payment methods do you accept?</summary>
-                <p>We accept credit/debit cards, PayPal, and bank transfers. All transactions are secure and encrypted.</p>
-            </details>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white text-center py-6">
-        <p>&copy; 2023 Reniks Beauty Saloon. All rights reserved.</p>
-    </footer>
-
-    <!-- Floating Buttons -->
-    <div class="fixed bottom-4 right-4 flex flex-col space-y-4">
-        <a href="https://wa.me/1234567890" class="bg-green-500 p-3 rounded-full shadow-lg">
-            <i class="bx bxl-whatsapp text-white text-2xl"></i>
-        </a>
-        <button onclick="scrollToTop()" class="bg-gray-800 p-3 rounded-full shadow-lg">
-            <i class="bx bx-up-arrow-alt text-white text-2xl"></i>
-        </button>
-    </div>
-
-    <script>
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Add search and filter functionality
-        const heroSearchInput = document.getElementById('heroSearchInput');
-        if (heroSearchInput) {
-            heroSearchInput.remove();
-        }
-        const filterBtn = document.getElementById('filterBtn');
-        const filterModal = document.getElementById('filterModal');
-        const applyFilterBtn = document.getElementById('applyFilterBtn');
-        const cancelFilterBtn = document.getElementById('cancelFilterBtn');
-        const filterForm = document.getElementById('filterForm');
-        const productsContainer = document.getElementById('products');
-
-        // Filter products
-        function filterProducts() {
-            const keyword = document.getElementById('keyword').value.toLowerCase();
-            const priceRange = document.getElementById('priceRange').value;
-            const [minPrice, maxPrice] = priceRange ? priceRange.split('-').map(Number) : [0, Infinity];
-
-            const productCards = productsContainer.children;
-            let found = false;
-
-            for (let product of productCards) {
-                const productName = product.querySelector("h2").innerText.toLowerCase();
-                const productPrice = parseInt(product.querySelector(".text-pink-500").innerText.replace("₦", "").replace(",000", ""));
-
-                if ((keyword === "" || productName.includes(keyword)) &&
-                    productPrice >= minPrice && productPrice <= maxPrice) {
-                    product.style.display = "block";
-                    found = true;
-                } else {
-                    product.style.display = "none";
-                }
-            }
-
-            if (!found) {
-                productsContainer.innerHTML = "<p class='text-center text-gray-500'>No products match your filter</p>";
-            }
-
-            filterModal.classList.add('hidden');
-        }
-
-        // Event listeners
-        filterBtn.addEventListener('click', () => filterModal.classList.remove('hidden'));
-        cancelFilterBtn.addEventListener('click', () => filterModal.classList.add('hidden'));
-        applyFilterBtn.addEventListener('click', filterProducts);
     </script>
 </body>
 </html>
