@@ -520,6 +520,11 @@
         // Filter products based on search input
         customSearchInput.addEventListener('input', () => {
             const searchText = customSearchInput.value.toLowerCase();
+            filterProducts(searchText);
+        });
+
+        // Function to filter products based on search input
+        function filterProducts(searchText) {
             const productCards = productsContainer.children;
             let found = false;
 
@@ -542,7 +547,7 @@
             if (searchText === '') {
                 loadProducts(); // Reset to show all products if input is cleared
             }
-        });
+        }
 
         // Cancel search and reset products
         cancelSearchBtn.addEventListener('click', () => {
@@ -623,16 +628,16 @@
             renderCartItems();
         }
 
-        const notification = document.getElementById('notification');
-
-        // Function to show notification
-        function showNotification(message) {
-            notification.textContent = message;
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000); // Hide after 3 seconds
-        }
+        // Event listener for cancel icon in cart modal
+        document.addEventListener('click', event => {
+            if (event.target.classList.contains('cancel-item') || event.target.closest('.cancel-item')) {
+                const productId = event.target.closest('.cancel-item').dataset.id;
+                cart = cart.filter(item => item.id !== productId);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                renderCartItems();
+                updateCartIcon();
+            }
+        });
 
         // Event listener for "Add to Cart" buttons
         document.addEventListener('click', event => {

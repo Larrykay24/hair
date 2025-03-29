@@ -255,6 +255,11 @@
             }
         }
 
+        // Add event listener to cart icon to navigate to view-cart.html
+        cartIcon.addEventListener('click', () => {
+            window.location.href = "view-cart.html";
+        });
+
         // Function to fetch product details
         function loadProductDetails(productId) {
             const productDetailsContainer = document.getElementById('productDetails');
