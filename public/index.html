@@ -175,6 +175,35 @@
                 align-items: center;
             }
         }
+        /* General styles for cart icon */
+        .add-to-cart {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: #38a169; /* Green background */
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%; /* Circular shape */
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-to-cart i {
+            font-size: 1rem; /* Moderate size */
+            color: white; /* White icon */
+        }
+
+        .add-to-cart:hover {
+            background-color: #2f855a; /* Darker green on hover */
+        }
+
+        /* Fix alignment of cart icon in the navbar */
+        .cart-container {
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -745,4 +774,6 @@
 <script src="firestore.js"></script>
 </body>
 </html>
+```
+</copilot-edited-file>
 
