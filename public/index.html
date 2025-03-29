@@ -664,6 +664,22 @@
             }
         });
 
+        // Function to show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000); // Hide after 3 seconds
+        }
+
+        // Ensure notification remains visible when scrolling
+        window.addEventListener('scroll', () => {
+            if (notification.style.display === 'block') {
+                notification.style.position = 'fixed';
+            }
+        });
+
         // Event listener for "View" button
         document.addEventListener('click', (event) => {
             if (event.target.classList.contains('view-product')) {
