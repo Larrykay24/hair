@@ -15,6 +15,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: #1a202c; /* Dark mode background */
             color: #f7fafc; /* Light text for dark mode */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
         }
         .glass {
             backdrop-filter: blur(10px);
@@ -34,13 +35,14 @@
             background-color: #db2777; /* Darker pink on hover */
         }
         .btn-glow {
-            box-shadow: 0 0 10px #ec4899, 0 0 20px #ec4899;
+            box-shadow: none; /* Remove glow effect */
         }
         .hero-section {
             background-image: url('https://static9.depositphotos.com/1441511/1130/i/450/depositphotos_11307116-stock-photo-woman-with-healthy-long-hair.jpg');
             background-size: cover;
             background-position: center;
             position: relative;
+            overflow: hidden; /* Prevent content overflow */
         }
         .hero-overlay {
             background-color: rgba(0, 0, 0, 0.5);
@@ -53,6 +55,7 @@
             color: #f7fafc;
             border-radius: 0.5rem;
             z-index: 1000;
+            transition: none; /* Remove hover animations */
         }
         .group:hover .dropdown-menu {
             display: block;
@@ -77,10 +80,12 @@
         .cart-icon span {
             background-color: #ec4899; /* Pink */
             color: #ffffff;
+            animation: none; /* Remove any animations */
         }
         .filter-modal {
             background-color: #2d3748; /* Dark modal */
             color: #f7fafc;
+            animation: none; /* Remove modal animations */
         }
         /* Responsive styles for mobile */
         @media (max-width: 768px) {
@@ -276,17 +281,7 @@
         <div class="hero-overlay p-6 rounded-lg">
             <h1 class="text-4xl font-bold">Find Your Perfect Hair</h1>
             <p class="text-lg mt-2">Quality Wigs, Extensions, and Beauty Products</p>
-            <!-- Add search bar and filter button -->
-            <div class="container mx-auto px-4 mt-8 flex justify-center items-center">
-                <div id="heroSearchContainer" class="relative w-full max-w-md">
-                    <input type="text" id="heroSearchInput" placeholder="Search for products..." 
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
-                </div>
-                <button id="filterBtn" class="ml-4 bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg text-lg font-semibold">
-                    Filter
-                </button>
-            </div>
-            <a href="#shop" class="btn-pink btn-glow px-6 py-3 rounded-lg mt-4 inline-block text-lg font-semibold">
+            <a href="#shop" class="btn-pink px-6 py-3 rounded-lg mt-4 inline-block text-lg font-semibold">
                 Shop Now
             </a>
         </div>
@@ -403,6 +398,9 @@
 
         // Add search and filter functionality
         const heroSearchInput = document.getElementById('heroSearchInput');
+        if (heroSearchInput) {
+            heroSearchInput.remove();
+        }
         const filterBtn = document.getElementById('filterBtn');
         const filterModal = document.getElementById('filterModal');
         const applyFilterBtn = document.getElementById('applyFilterBtn');
@@ -443,16 +441,6 @@
         filterBtn.addEventListener('click', () => filterModal.classList.remove('hidden'));
         cancelFilterBtn.addEventListener('click', () => filterModal.classList.add('hidden'));
         applyFilterBtn.addEventListener('click', filterProducts);
-
-        heroSearchInput.addEventListener('keyup', () => {
-            const searchText = heroSearchInput.value.toLowerCase();
-            const productCards = productsContainer.children;
-
-            for (let product of productCards) {
-                const productName = product.querySelector("h2").innerText.toLowerCase();
-                product.style.display = productName.includes(searchText) ? "block" : "none";
-            }
-        });
     </script>
 </body>
 </html>
