@@ -221,7 +221,7 @@
             apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
             authDomain: "hair-vstore.firebaseapp.com",
             projectId: "hair-vstore",
-            storageBucket: "hair-vstore.appspot.com",
+            storageBucket: "hair-vstore",
             messagingSenderId: "172889498629",
             appId: "1:172889498629:web:5b66a3eec207839a25286c"
         };
@@ -344,6 +344,13 @@
         // ✅ Toggle Mobile Menu
         menuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
+        });
+
+        // ✅ Close Mobile Menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!menuBtn.contains(event.target) && !mobileMenu.contains(event.target)) {
+                mobileMenu.classList.add('hidden');
+            }
         });
     </script>
 </body>

@@ -311,6 +311,19 @@
     <script>
         const menuBtn = document.getElementById('menuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
+
+        // Toggle Mobile Menu
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close Mobile Menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!menuBtn.contains(event.target) && !mobileMenu.contains(event.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
         const navSearchContainer = document.getElementById('navSearchContainer');
         const navSearchInput = document.getElementById('navSearchInput');
         const heroSearchInput = document.getElementById('heroSearchInput');
@@ -326,10 +339,6 @@
         const applyFilterBtn = document.getElementById('applyFilterBtn');
         const cancelFilterBtn = document.getElementById('cancelFilterBtn');
         const filterForm = document.getElementById('filterForm');
-
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
 
         // ✅ Function to Filter Products
         function filterProducts(searchText) {

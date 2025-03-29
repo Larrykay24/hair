@@ -34,6 +34,15 @@
                 <a href="index.html" class="hover:underline">Home</a>
                 <a href="view-cart.html" class="hover:underline">View Cart</a>
             </div>
+            <!-- Mobile Menu Button -->
+            <button id="menuBtn" class="md:hidden text-white">
+                <i class="bx bx-menu"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden">
+            <a href="index.html" class="block py-2 px-4 hover:underline">Home</a>
+            <a href="view-cart.html" class="block py-2 px-4 hover:underline">View Cart</a>
         </div>
     </nav>
 
@@ -131,6 +140,21 @@
 
         // ✅ Render Cart Items on Page Load
         renderCartItems();
+
+        // Toggle Mobile Menu
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close Mobile Menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!menuBtn.contains(event.target) && !mobileMenu.contains(event.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
     </script>
 </body>
 </html>
