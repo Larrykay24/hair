@@ -177,6 +177,8 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: none; /* Hidden by default */
             z-index: 1000;
+            display: flex;
+            align-items: center;
         }
 
         #customSearchInput {
@@ -197,6 +199,21 @@
         #customSearchInput:focus {
             border-color: #ec4899;
             box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.5);
+        }
+
+        #cancelSearchBtn {
+            margin-left: 0.5rem;
+            background-color: #ec4899;
+            color: white;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        #cancelSearchBtn:hover {
+            background-color: #db2777;
         }
     </style>
 </head>
@@ -230,6 +247,7 @@
         <!-- Custom Search Input -->
         <div id="customSearchContainer">
             <input type="text" id="customSearchInput" placeholder="Search products..." />
+            <button id="cancelSearchBtn">Cancel</button>
         </div>
     </header>
 
@@ -382,13 +400,14 @@
         const searchIcon = document.getElementById('searchIcon');
         const customSearchContainer = document.getElementById('customSearchContainer');
         const customSearchInput = document.getElementById('customSearchInput');
+        const cancelSearchBtn = document.getElementById('cancelSearchBtn');
         const productsContainer = document.getElementById('products');
 
         // Toggle visibility of the custom search input
         searchIcon.addEventListener('click', () => {
             customSearchContainer.style.display =
                 customSearchContainer.style.display === 'none' || customSearchContainer.style.display === ''
-                    ? 'block'
+                    ? 'flex'
                     : 'none';
             customSearchInput.focus(); // Focus on the input when shown
         });
@@ -418,6 +437,13 @@
             if (searchText === '') {
                 loadProducts(); // Reset to show all products if input is cleared
             }
+        });
+
+        // Cancel search and reset products
+        cancelSearchBtn.addEventListener('click', () => {
+            customSearchInput.value = ''; // Clear the search input
+            customSearchContainer.style.display = 'none'; // Hide the search container
+            loadProducts(); // Reset to show all products
         });
     </script>
 </body>
