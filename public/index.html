@@ -82,6 +82,54 @@
             background-color: #2d3748; /* Dark modal */
             color: #f7fafc;
         }
+        /* Responsive styles for mobile */
+        @media (max-width: 768px) {
+            #products {
+                grid-template-columns: repeat(1, 1fr); /* Single column on mobile */
+            }
+            .hero-section h1 {
+                font-size: 1.75rem; /* Adjust hero heading size */
+            }
+            .hero-section p {
+                font-size: 1rem; /* Adjust hero subheading size */
+            }
+            .hero-section a {
+                font-size: 0.875rem; /* Adjust button size */
+            }
+        }
+
+        /* FAQ Section Styling */
+        .faq-section {
+            background-color: #2d3748; /* Dark background */
+            color: #f7fafc; /* Light text */
+            padding: 2rem 1rem;
+            border-radius: 0.5rem;
+        }
+        .faq-section h2 {
+            font-size: 1.75rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .faq-section details {
+            background-color: #1a202c; /* Slightly darker background for details */
+            border: 1px solid #4a5568; /* Border for details */
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+        }
+        .faq-section details summary {
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .faq-section details summary:hover {
+            color: #ec4899; /* Pink hover effect */
+        }
+        .faq-section details p {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #a0aec0; /* Lighter text for answers */
+        }
     </style>
     <script>
         // Initialize Firestore
@@ -89,7 +137,7 @@
 
         // Fetch products from Firestore and render them
         async function loadProducts() {
-            const productGrid = document.getElementById('product-grid');
+            const productGrid = document.getElementById('products');
             productGrid.innerHTML = ''; // Clear existing content
 
             try {
@@ -239,32 +287,30 @@
     <section id="shop" class="p-6">
         <h2 class="text-2xl font-bold text-center mb-4">Shop All Products</h2>
         <div id="products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Example Product Card -->
-            <div class="glass p-4 rounded-lg relative">
-                <img src="product-image.jpg" alt="Product Name" class="w-full h-48 object-cover rounded-md">
-                <h2 class="mt-2 text-lg font-bold">Product Name</h2>
-                <p class="text-pink-500 font-semibold">₦10,000.00</p>
-                <p class="text-gray-400">Product description goes here.</p>
-                <button class="add-to-cart absolute top-2 right-2 p-2 rounded-full">
-                    <i class="bx bx-cart-add text-xl"></i>
-                </button>
-                <button class="view-product mt-4 w-full px-4 py-2 rounded-lg text-sm font-semibold">
-                    View Product
-                </button>
-            </div>
-            <!-- ...other product cards... -->
+            <!-- Products will be dynamically loaded here -->
         </div>
     </section>
 
     <!-- FAQ Section -->
-    <section class="p-6 bg-gray-100">
-        <h2 class="text-2xl font-bold text-center">Frequently Asked Questions</h2>
-        <div class="mt-4">
-            <details class="mb-4">
-                <summary class="font-semibold">What is your return policy?</summary>
-                <p class="mt-2 text-sm">We offer a 30-day return policy for unused products.</p>
+    <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div>
+            <details>
+                <summary>What is your return policy?</summary>
+                <p>We offer a 30-day return policy for unused products. Please ensure the product is in its original packaging.</p>
             </details>
-            <!-- ...more FAQs -->
+            <details>
+                <summary>Do you offer international shipping?</summary>
+                <p>Yes, we ship worldwide. Shipping fees and delivery times vary based on your location.</p>
+            </details>
+            <details>
+                <summary>How can I track my order?</summary>
+                <p>Once your order is shipped, you will receive a tracking number via email to monitor your delivery.</p>
+            </details>
+            <details>
+                <summary>What payment methods do you accept?</summary>
+                <p>We accept credit/debit cards, PayPal, and bank transfers. All transactions are secure and encrypted.</p>
+            </details>
         </div>
     </section>
 
