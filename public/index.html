@@ -339,6 +339,47 @@
                 mobileMenu.classList.add('closed');
             }
         });
+
+        const searchIcon = document.getElementById('searchIcon');
+        const productsContainer = document.getElementById('products');
+
+        // Function to filter products based on search input
+        function filterProducts(searchText) {
+            searchText = searchText.toLowerCase(); // Convert to lowercase for comparison
+            const productCards = productsContainer.children; // Get all product cards
+            let found = false; // Flag to check if any product matches
+
+            for (let product of productCards) {
+                const productName = product.querySelector("h2").innerText.toLowerCase();
+                const productDescription = product.querySelector("p").innerText.toLowerCase();
+
+                // Check if the search text matches the product name or description
+                if (productName.includes(searchText) || productDescription.includes(searchText)) {
+                    product.style.display = "block"; // Show matching products
+                    found = true; // Set flag to true if a match is found
+                } else {
+                    product.style.display = "none"; // Hide non-matching products
+                }
+            }
+
+            // Show "No products found" message if no product matches
+            if (!found) {
+                productsContainer.innerHTML = "<p class='text-center text-gray-500'>No products found</p>";
+            }
+
+            // Reset to show all products if search input is cleared
+            if (searchText === "") {
+                loadProducts();
+            }
+        }
+
+        // Event listener for the search icon
+        searchIcon.addEventListener('click', () => {
+            const searchInput = prompt("Enter product name or description to search:");
+            if (searchInput) {
+                filterProducts(searchInput);
+            }
+        });
     </script>
 </body>
 </html>
