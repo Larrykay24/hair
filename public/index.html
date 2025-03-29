@@ -17,17 +17,42 @@
             background-image: url('https://static9.depositphotos.com/1441511/1130/i/450/depositphotos_11307116-stock-photo-woman-with-healthy-long-hair.jpg');
             background-size: cover;
             background-position: center;
-            height: 60vh;
+            height: 70vh; /* Adjusted height for better fit */
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             color: white;
+            padding: 1rem; /* Add padding for better spacing */
         }
         .hero-overlay {
             background-color: rgba(0, 0, 0, 0.5);
             padding: 2rem;
             border-radius: 0.5rem;
+            max-width: 90%; /* Ensure content doesn't overflow */
+            text-align: center;
+        }
+        .hero-overlay h1 {
+            font-size: 2rem; /* Default size for smaller screens */
+        }
+        .hero-overlay p {
+            font-size: 1rem; /* Default size for smaller screens */
+        }
+        @media (min-width: 768px) {
+            .hero-overlay h1 {
+                font-size: 3rem; /* Larger size for tablets and above */
+            }
+            .hero-overlay p {
+                font-size: 1.25rem; /* Larger size for tablets and above */
+            }
+        }
+        @media (min-width: 1024px) {
+            .hero-overlay h1 {
+                font-size: 4rem; /* Larger size for desktops */
+            }
+            .hero-overlay p {
+                font-size: 1.5rem; /* Larger size for desktops */
+            }
         }
         .product-card {
             background-color: white;
@@ -102,9 +127,9 @@
 
     <!-- Hero Section -->
     <section class="hero-section">
-        <div class="hero-overlay"></div>
-            <h1 class="text-4xl font-bold">Welcome to Reniks Beauty Saloon</h1>
-            <p class="text-lg mt-2">Discover the best wigs, extensions, and beauty products.</p>
+        <div class="hero-overlay">
+            <h1 class="font-bold">Welcome to Reniks Beauty Saloon</h1>
+            <p class="mt-2">Discover the best wigs, extensions, and beauty products.</p>
             <a href="#shop" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg mt-4 inline-block text-lg font-semibold">
                 Shop Now
             </a>
