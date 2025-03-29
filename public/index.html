@@ -112,6 +112,31 @@
                 font-size: 0.875rem; /* Adjust button size */
             }
         }
+        /* Fix alignment of cart icon in the navbar */
+        .cart-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Adjust cart icon on each product */
+        .add-to-cart {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .add-to-cart i {
+            font-size: 1.5rem; /* Moderate size */
+            color: #38a169; /* Green color */
+        }
+
+        .add-to-cart:hover i {
+            color: #2f855a; /* Darker green on hover */
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -249,9 +274,9 @@
             <h2 class="mt-2 text-lg font-bold">Product Name</h2>
             <p class="text-pink-500 font-semibold">₦10,000.00</p>
             <p class="text-black font-regular">Product description goes here.</p>
-            <!-- Add Cart Icon -->
-            <button class="bg-green-500 text-white p-2 rounded-lg add-to-cart" data-id="product-id">
-                <i class='bx bx-cart-add text-xl'></i> Add to Cart
+            <!-- Adjusted cart icon -->
+            <button class="add-to-cart" data-id="product-id">
+                <i class='bx bx-cart-add'></i>
             </button>
             <!-- View Product Button -->
             <button class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold view-product" data-id="product-id">
@@ -682,4 +707,6 @@
 <script src="firestore.js"></script>
 </body>
 </html>
+```
+</copilot-edited-file>
 
