@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reniks Beauty Saloon</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .glass {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .dark-mode {
+            background-color: #1a202c;
+            color: #f7fafc;
+        }
+    </style>
+</head>
+<body class="bg-pink-100 dark-mode">
+    <!-- Firebase Configuration -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
+            authDomain: "hair-vstore.firebaseapp.com",
+            projectId: "hair-vstore",
+            storageBucket: "hair-vstore.appspot.com",
+            messagingSenderId: "172889498629",
+            appId: "1:172889498629:web:5b66a3eec207839a25286c"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <!-- Hero Section -->
+    <header class="relative bg-pink-500 text-white text-center py-20">
+        <h1 class="text-4xl font-bold">Welcome to Reniks Beauty Saloon</h1>
+        <p class="mt-4 text-lg">Your one-stop shop for premium hair products</p>
+        <button class="mt-6 px-6 py-3 bg-white text-pink-500 font-semibold rounded-full hover:bg-pink-100">
+            Shop Now
+        </button>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="flex justify-between items-center px-6 py-4 bg-white shadow-md sticky top-0 z-50">
+        <div class="text-2xl font-bold text-pink-500">Reniks</div>
+        <div class="flex items-center space-x-4">
+            <input type="text" placeholder="Search..." class="px-4 py-2 border rounded-full focus:outline-none">
+            <i class="bx bx-search text-xl"></i>
+            <i class="bx bx-cart text-xl"></i>
+        </div>
+    </nav>
+
+    <!-- Product Grid -->
+    <section class="grid grid-cols-2 gap-6 p-6">
+        <!-- Example Product -->
+        <div class="glass p-4 rounded-lg">
+            <img src="https://via.placeholder.com/150" alt="Product" class="w-full rounded-lg">
+            <h2 class="mt-4 text-lg font-semibold">Product Name</h2>
+            <p class="text-sm text-gray-600">$20.00</p>
+            <button class="mt-2 px-4 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600">
+                Add to Cart
+            </button>
+        </div>
+        <!-- ...repeat for more products -->
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="p-6 bg-gray-100">
+        <h2 class="text-2xl font-bold text-center">Frequently Asked Questions</h2>
+        <div class="mt-4">
+            <details class="mb-4">
+                <summary class="font-semibold">What is your return policy?</summary>
+                <p class="mt-2 text-sm">We offer a 30-day return policy for unused products.</p>
+            </details>
+            <!-- ...more FAQs -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-pink-500 text-white text-center py-6">
+        <p>&copy; 2023 Reniks Beauty Saloon. All rights reserved.</p>
+    </footer>
+
+    <!-- Floating Buttons -->
+    <div class="fixed bottom-4 right-4 flex flex-col space-y-4">
+        <a href="https://wa.me/1234567890" class="bg-green-500 p-3 rounded-full shadow-lg">
+            <i class="bx bxl-whatsapp text-white text-2xl"></i>
+        </a>
+        <button onclick="scrollToTop()" class="bg-gray-800 p-3 rounded-full shadow-lg">
+            <i class="bx bx-up-arrow-alt text-white text-2xl"></i>
+        </button>
+    </div>
+
+    <script>
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
