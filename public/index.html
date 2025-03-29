@@ -164,11 +164,38 @@
         #mobileMenuFooter a:hover {
             text-decoration: underline;
         }
+
+        /* Custom search input styling */
+        #customSearchContainer {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none; /* Hidden by default */
+            z-index: 1000;
+        }
+
+        #customSearchInput {
+            width: 200px;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            outline: none;
+            font-size: 0.875rem;
+        }
+
+        #customSearchInput:focus {
+            border-color: #ec4899;
+            box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.5);
+        }
     </style>
 </head>
 <body>
     <!-- Header Section -->
-    <header class="bg-gray-800 text-white p-4">
+    <header class="bg-gray-800 text-white p-4 relative">
         <div class="container mx-auto flex justify-between items-center">
             <!-- Logo -->
             <a href="#" class="text-2xl font-bold">Reniks</a>
@@ -191,6 +218,11 @@
                     <i class="bx bx-menu"></i>
                 </button>
             </div>
+        </div>
+
+        <!-- Custom Search Input -->
+        <div id="customSearchContainer">
+            <input type="text" id="customSearchInput" placeholder="Search products..." />
         </div>
     </header>
 
@@ -341,43 +373,43 @@
         });
 
         const searchIcon = document.getElementById('searchIcon');
+        const customSearchContainer = document.getElementById('customSearchContainer');
+        const customSearchInput = document.getElementById('customSearchInput');
         const productsContainer = document.getElementById('products');
 
-        // Function to filter products based on search input
-        function filterProducts(searchText) {
-            searchText = searchText.toLowerCase(); // Convert to lowercase for comparison
-            const productCards = productsContainer.children; // Get all product cards
-            let found = false; // Flag to check if any product matches
+        // Toggle visibility of the custom search input
+        searchIcon.addEventListener('click', () => {
+            customSearchContainer.style.display =
+                customSearchContainer.style.display === 'none' || customSearchContainer.style.display === ''
+                    ? 'block'
+                    : 'none';
+            customSearchInput.focus(); // Focus on the input when shown
+        });
+
+        // Filter products based on search input
+        customSearchInput.addEventListener('input', () => {
+            const searchText = customSearchInput.value.toLowerCase();
+            const productCards = productsContainer.children;
+            let found = false;
 
             for (let product of productCards) {
-                const productName = product.querySelector("h2").innerText.toLowerCase();
-                const productDescription = product.querySelector("p").innerText.toLowerCase();
+                const productName = product.querySelector('h2').innerText.toLowerCase();
+                const productDescription = product.querySelector('p').innerText.toLowerCase();
 
-                // Check if the search text matches the product name or description
                 if (productName.includes(searchText) || productDescription.includes(searchText)) {
-                    product.style.display = "block"; // Show matching products
-                    found = true; // Set flag to true if a match is found
+                    product.style.display = 'block';
+                    found = true;
                 } else {
-                    product.style.display = "none"; // Hide non-matching products
+                    product.style.display = 'none';
                 }
             }
 
-            // Show "No products found" message if no product matches
             if (!found) {
                 productsContainer.innerHTML = "<p class='text-center text-gray-500'>No products found</p>";
             }
 
-            // Reset to show all products if search input is cleared
-            if (searchText === "") {
-                loadProducts();
-            }
-        }
-
-        // Event listener for the search icon
-        searchIcon.addEventListener('click', () => {
-            const searchInput = prompt("Enter product name or description to search:");
-            if (searchInput) {
-                filterProducts(searchInput);
+            if (searchText === '') {
+                loadProducts(); // Reset to show all products if input is cleared
             }
         });
     </script>
