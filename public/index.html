@@ -86,6 +86,65 @@
             flex: 1;
             margin: 0 0.25rem;
         }
+        /* Slide-in animation for the mobile menu */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(100%);
+            }
+        }
+
+        #mobileMenu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 75%;
+            background-color: #1a202c;
+            color: white;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        #mobileMenu.open {
+            animation: slideIn 0.3s forwards;
+        }
+
+        #mobileMenu.closed {
+            animation: slideOut 0.3s forwards;
+        }
+
+        #mobileMenu ul {
+            padding: 2rem;
+            list-style: none;
+        }
+
+        #mobileMenu ul li {
+            margin-bottom: 1.5rem;
+        }
+
+        #mobileMenu ul li a {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        #mobileMenu ul li a:hover {
+            color: #ec4899;
+        }
     </style>
 </head>
 <body>
@@ -116,12 +175,13 @@
         </div>
     </header>
 
-    <!-- Mobile Menu (Hidden by Default) -->
-    <nav id="mobileMenu" class="hidden bg-gray-700 text-white p-4">
-        <ul class="space-y-4">
-            <li><a href="#" class="hover:underline">Home</a></li>
-            <li><a href="#shop" class="hover:underline">Shop</a></li>
-            <li><a href="#" class="hover:underline">Contact</a></li>
+    <!-- Mobile Menu -->
+    <nav id="mobileMenu" class="closed">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact Us</a></li>
         </ul>
     </nav>
 
@@ -227,6 +287,28 @@
 
         // Load products on page load
         document.addEventListener('DOMContentLoaded', loadProducts);
+
+        const menuIcon = document.getElementById('menuIcon');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        // Toggle mobile menu with slide-in animation
+        menuIcon.addEventListener('click', () => {
+            if (mobileMenu.classList.contains('closed')) {
+                mobileMenu.classList.remove('closed');
+                mobileMenu.classList.add('open');
+            } else {
+                mobileMenu.classList.remove('open');
+                mobileMenu.classList.add('closed');
+            }
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!menuIcon.contains(event.target) && !mobileMenu.contains(event.target)) {
+                mobileMenu.classList.remove('open');
+                mobileMenu.classList.add('closed');
+            }
+        });
     </script>
 </body>
 </html>
