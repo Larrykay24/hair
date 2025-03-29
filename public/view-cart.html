@@ -142,6 +142,7 @@
                 localStorage.setItem('cart', JSON.stringify(cart));
                 renderCartItems();
                 updateCartIcon();
+                showNotification("Product removed from cart!");
             }
         });
 
@@ -185,6 +186,17 @@
 
         // Initialize cart icon on page load
         updateCartIcon();
+
+        // Function to show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.remove();
+            }, 3000); // Hide after 3 seconds
+        }
     </script>
 </body>
 </html>

@@ -71,14 +71,20 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: #4CAF50; /* Green */
+            background-color: #38a169; /* Green background */
             color: white;
             padding: 15px 20px;
-            border-radius: 5px;
+            border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             font-size: 16px;
             z-index: 1000;
             display: none; /* Hidden by default */
+            animation: fadeInOut 3s ease-in-out;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-10px); }
+            10%, 90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
         }
         .grid {
             display: grid;
@@ -180,11 +186,12 @@
 
         // Function to show notification
         function showNotification(message) {
+            const notification = document.getElementById('notification');
             notification.textContent = message;
-            notification.classList.remove('hidden');
+            notification.style.display = 'block';
             setTimeout(() => {
-                notification.classList.add('hidden');
-            }, 3000);
+                notification.style.display = 'none';
+            }, 3000); // Hide after 3 seconds
         }
 
         // Function to update cart icon badge
@@ -266,6 +273,9 @@
 
         // Initialize cart icon on page load
         updateCartIcon();
+
+        // Sync cart icon on page load
+        document.addEventListener('DOMContentLoaded', updateCartIcon);
     </script>
 </body>
 </html>
