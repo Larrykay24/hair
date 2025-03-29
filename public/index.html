@@ -265,6 +265,9 @@
                 <button id="clearCartBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg">Clear Cart</button>
                 <button id="closeCartBtn" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Close</button>
             </div>
+            <div class="mt-4 text-center">
+                <button id="viewAllCartBtn" class="bg-pink-500 text-white px-4 py-2 rounded-lg">View All Cart</button>
+            </div>
         </div>
     </div>
 
@@ -374,7 +377,7 @@
                                 <p class="text-sm text-gray-400">${product.description}</p>
                                 <div class="actions">
                                     <button class="bg-green-500 text-white px-4 py-2 rounded-lg add-to-cart">Add to Cart</button>
-                                    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg">View</button>
+                                    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg view-product" data-id="${doc.id}">View</button>
                                 </div>
                             </div>
                         </div>
@@ -510,7 +513,9 @@
                                     <button class="bg-gray-300 text-gray-700 px-2 py-1 rounded-lg increase-quantity" data-id="${item.id}">+</button>
                                 </div>
                             </div>
-                            <button class="bg-red-500 text-white px-2 py-1 rounded-lg remove-item" data-id="${item.id}">Remove</button>
+                            <button class="text-red-500 text-2xl cancel-item" data-id="${item.id}">
+                                <i class="bx bx-x"></i>
+                            </button>
                         </div>
                     `;
                 });
@@ -562,6 +567,14 @@
             }
         });
 
+        // Event listener for "View" button
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('view-product')) {
+                const productId = event.target.dataset.id;
+                window.location.href = `view-product.html?id=${productId}`;
+            }
+        });
+
         // Event listener for cart modal buttons
         document.addEventListener('click', event => {
             if (event.target.classList.contains('decrease-quantity')) {
@@ -582,13 +595,18 @@
                 localStorage.setItem('cart', JSON.stringify(cart));
                 renderCartItems();
                 updateCartIcon();
-            } else if (event.target.classList.contains('remove-item')) {
+            } else if (event.target.classList.contains('cancel-item')) {
                 const productId = event.target.dataset.id;
                 cart = cart.filter(item => item.id !== productId);
                 localStorage.setItem('cart', JSON.stringify(cart));
                 renderCartItems();
                 updateCartIcon();
             }
+        });
+
+        // Event listener for "View All Cart" button
+        document.getElementById('viewAllCartBtn').addEventListener('click', () => {
+            window.location.href = "view-cart.html";
         });
 
         // Event listeners for cart modal actions
