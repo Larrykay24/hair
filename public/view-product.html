@@ -138,69 +138,11 @@
     </header>
 
     <!-- Notification -->
-    <div id="notification" class="notification">Product added to cart successfully!</div>
-    <!-- Navbar -->
-    <nav class="bg-pink-500 text-white p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <!-- Logo -->
-            <a href="https://hair-taupe.vercel.app" class="text-lg font-bold">Reniksbeautyplace</a>
-
-            <!-- Mobile Menu Button -->
-            <button id="menuBtn" class="md:hidden text-3xl">
-                <i class='bx bx-menu'></i>
-            </button>
-
-            <!-- Navbar Links (Desktop) -->
-            <div id="navLinks" class="hidden md:flex space-x-6">
-                <a href="https://hair-taupe.vercel.app" class="hover:underline">Home</a>
-                <div class="relative group">
-                    <a href="#" class="hover:underline flex items-center">
-                        Shop <i class='bx bx-chevron-down ml-1'></i>
-                    </a>
-                    <div class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block dropdown-menu">
-                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Wigs</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Perfume</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Hair</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Shoes</a>
-                    </div>
-                </div>
-                <a href="#" class="hover:underline">Contact</a>
-            </div>
-
-            <!-- Icons -->
-            <div class="flex items-center space-x-4">
-               
-
-                <!-- Cart Icon -->
-                <div class="cart-container relative icon-visible">
-                    <a href="view-cart.html">
-                        <i class='bx bx-cart text-2xl cursor-pointer'></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile Menu (Hidden by default) -->
-        <div id="mobileMenu" class="hidden flex flex-col items-center space-y-4 py-4 bg-pink-600 md:hidden">
-            <a href="#" class="hover:underline">Home</a>
-            <div class="relative group">
-                <a href="#" class="hover:underline flex items-center">
-                    Shop <i class='bx bx-chevron-down ml-1'></i>
-                </a>
-                <div class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block dropdown-menu">
-                    <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Wigs</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Perfume</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Hair</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white">Shoes</a>
-                </div>
-            </div>
-            <a href="#" class="hover:underline">Contact</a>
-        </div>
-    </nav>
+    <div id="notification" class="notification hidden">Product added to cart successfully!</div>
 
     <!-- Product Details Section -->
     <section class="container mx-auto px-4 mt-8">
-        <div id="productDetails" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div id="productDetails" class="bg-white shadow-md rounded-lg p-6">
             <!-- Product details will be dynamically added here -->
         </div>
     </section>
@@ -219,39 +161,61 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <script>
-        // ✅ Firebase Configuration
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
             authDomain: "hair-vstore.firebaseapp.com",
             projectId: "hair-vstore",
-            storageBucket: "hair-vstore",
+            storageBucket: "hair-vstore.appspot.com",
             messagingSenderId: "172889498629",
             appId: "1:172889498629:web:5b66a3eec207839a25286c"
         };
 
-        // ✅ Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // ✅ Function to Fetch Product Details from Firestore
+        const cartIcon = document.querySelector(".bx-cart");
+        const notification = document.getElementById('notification');
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Function to show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.classList.remove('hidden');
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Function to update cart icon badge
+        function updateCartIcon() {
+            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            const cartCountElement = document.getElementById('cartCount');
+            if (cartCount > 0) {
+                cartCountElement.textContent = cartCount;
+                cartCountElement.classList.remove('hidden');
+            } else {
+                cartCountElement.classList.add('hidden');
+            }
+        }
+
+        // Function to fetch product details
         function loadProductDetails(productId) {
             const productDetailsContainer = document.getElementById('productDetails');
-            console.log("Fetching product details for ID:", productId); // Debugging line
 
             db.collection("products").doc(productId).get()
                 .then((doc) => {
                     if (doc.exists) {
-                        let product = doc.data();
-
+                        const product = doc.data();
                         productDetailsContainer.innerHTML = `
-                            <div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <img src="${product.image}" alt="${product.name}" class="w-full h-96 object-cover rounded-md">
-                            </div>
-                            <div>
-                                <h1 class="text-4xl font-bold">${product.name}</h1>
-                                <p class="text-pink-500 font-semibold text-2xl">₦${product.price},000</p>
-                                <p class="mt-4">${product.description}</p>
-                                <button class="mt-4 bg-pink-500 text-white px-6 py-3 rounded-lg text-lg font-semibold add-to-cart" data-id="${productId}">Add to Cart</button>
+                                <div>
+                                    <h1 class="text-4xl font-bold">${product.name}</h1>
+                                    <p class="text-pink-500 font-semibold text-2xl mt-4">₦${product.price},000</p>
+                                    <p class="mt-4 text-gray-700">${product.description}</p>
+                                    <button class="mt-6 bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg text-lg font-semibold add-to-cart" data-id="${doc.id}">Add to Cart</button>
+                                </div>
                             </div>
                         `;
                     } else {
@@ -264,97 +228,44 @@
                 });
         }
 
-        // ✅ Get Product ID from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('id');
-
-        // ✅ Load product details when the page loads
-        window.onload = () => {
-            if (productId) {
-                loadProductDetails(productId);
-            } else {
-                document.getElementById('productDetails').innerHTML = "<p class='text-center text-gray-500'>Product not found</p>";
-            }
-        };
-
-        // ✅ Select Elements
-        const cartIcon = document.querySelector(".bx-cart");
-        const menuBtn = document.getElementById('menuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const notification = document.getElementById('notification');
-
-        // ✅ Function to Show Notification
-        function showNotification(message) {
-            notification.textContent = message;
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000); // Hide after 3 seconds
-        }
-
-        // ✅ Function to Add Product to Cart
+        // Add to Cart functionality
         document.addEventListener("click", function (event) {
             if (event.target.closest(".add-to-cart")) {
-                const productElement = event.target.closest("div");
-                const productId = event.target.closest(".add-to-cart").dataset.id;
-                const product = {
-                    id: productId,
-                    image: productElement.querySelector("img").src,
-                    name: productElement.querySelector("h1").textContent,
-                    price: parseInt(productElement.querySelector(".text-pink-500").textContent.replace("₦", "").replace(",000", "")),
-                    description: productElement.querySelector("p").textContent,
-                    quantity: 1
-                };
+                const productElement = event.target.closest(".add-to-cart");
+                const productId = productElement.dataset.id;
 
-                const existingProduct = cart.find(item => item.id === product.id);
-                if (existingProduct) {
-                    existingProduct.quantity += 1;
-                } else {
-                    cart.push(product);
-                }
-
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCartIcon();
-                showNotification("Product added to cart successfully!");
+                db.collection("products").doc(productId).get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const product = doc.data();
+                            const existingProduct = cart.find(item => item.id === productId);
+                            if (existingProduct) {
+                                existingProduct.quantity += 1;
+                            } else {
+                                cart.push({ ...product, id: productId, quantity: 1 });
+                            }
+                            localStorage.setItem('cart', JSON.stringify(cart));
+                            updateCartIcon();
+                            showNotification("Product added to cart successfully!");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error adding product to cart: ", error);
+                    });
             }
         });
 
-        // ✅ Function to Update Cart Icon
-        function updateCartIcon() {
-            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-            let cartBadge = document.getElementById("cartCountBadge");
-
-            if (!cartBadge) {
-                cartBadge = document.createElement("span");
-                cartBadge.id = "cartCountBadge";
-                cartBadge.className = "absolute top-0 right-0 transform translate-x-2 -translate-y-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full";
-                cartIcon.parentNode.appendChild(cartBadge);
-            }
-
-            cartBadge.textContent = cartCount > 0 ? cartCount : '';
-            if (cartCount === 0) cartBadge.remove();
+        // Get product ID from URL and load details
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        if (productId) {
+            loadProductDetails(productId);
+        } else {
+            document.getElementById('productDetails').innerHTML = "<p class='text-center text-gray-500'>Product not found</p>";
         }
 
-        // ✅ Initialize Cart Icon on Page Load
+        // Initialize cart icon on page load
         updateCartIcon();
-
-        // ✅ Function to Navigate to View Cart Page
-        cartIcon.addEventListener('click', () => {
-            window.location.href = "view-cart.html";
-        });
-
-        // ✅ Toggle Mobile Menu
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // ✅ Close Mobile Menu when clicking outside
-        document.addEventListener('click', (event) => {
-            if (!menuBtn.contains(event.target) && !mobileMenu.contains(event.target)) {
-                mobileMenu.classList.add('hidden');
-            }
-        });
     </script>
 </body>
 </html>

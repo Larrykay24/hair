@@ -251,6 +251,9 @@
         </div>
     </header>
 
+    <!-- Notification -->
+    <div id="notification" class="notification hidden">Product added to cart successfully!</div>
+
     <!-- Cart Modal -->
     <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg w-11/12 md:w-1/2 lg:w-1/3">
@@ -543,6 +546,17 @@
             renderCartItems();
         }
 
+        const notification = document.getElementById('notification');
+
+        // Function to show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.classList.remove('hidden');
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3000); // Hide after 3 seconds
+        }
+
         // Event listener for "Add to Cart" buttons
         document.addEventListener('click', event => {
             if (event.target.closest('.add-to-cart')) {
@@ -564,6 +578,7 @@
 
                 localStorage.setItem('cart', JSON.stringify(cart));
                 updateCartIcon();
+                showNotification('Product added to cart successfully!');
             }
         });
 
