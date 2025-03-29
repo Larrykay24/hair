@@ -36,6 +36,10 @@
 
             try {
                 const querySnapshot = await db.collection('products').get();
+                if (querySnapshot.empty) {
+                    productGrid.innerHTML = '<p class="text-center text-gray-500">No products available.</p>';
+                    return;
+                }
                 querySnapshot.forEach((doc) => {
                     const product = doc.data();
                     const productCard = `
@@ -52,6 +56,7 @@
                 });
             } catch (error) {
                 console.error('Error fetching products:', error);
+                productGrid.innerHTML = '<p class="text-center text-red-500">Failed to load products. Please try again later.</p>';
             }
         }
 
