@@ -165,12 +165,13 @@
             text-decoration: underline;
         }
 
-        /* Custom search input styling */
+        /* Updated custom search input styling with glassmorphism */
         #customSearchContainer {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            background-color: white;
+            background: rgba(255, 255, 255, 0.2); /* Glassmorphism background */
+            backdrop-filter: blur(10px); /* Blur effect */
             padding: 0.5rem;
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -181,10 +182,16 @@
         #customSearchInput {
             width: 200px;
             padding: 0.5rem;
-            border: 1px solid #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Semi-transparent border */
             border-radius: 0.5rem;
             outline: none;
             font-size: 0.875rem;
+            background: transparent; /* Transparent background */
+            color: white; /* White text for visibility */
+        }
+
+        #customSearchInput::placeholder {
+            color: rgba(255, 255, 255, 0.7); /* Semi-transparent placeholder text */
         }
 
         #customSearchInput:focus {
