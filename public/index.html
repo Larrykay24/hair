@@ -180,6 +180,41 @@
             display: flex;
             align-items: center;
         }
+
+        #customSearchInput {
+            width: 300px; /* Widened input field */
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Semi-transparent border */
+            border-radius: 0.5rem;
+            outline: none;
+            font-size: 0.875rem;
+            background: rgba(255, 255, 255, 0.8); /* Slightly opaque background for better visibility */
+            color: #1a202c; /* Dark text for better readability */
+        }
+
+        #customSearchInput::placeholder {
+            color: rgba(26, 32, 44, 0.7); /* Semi-transparent placeholder text */
+        }
+
+        #customSearchInput:focus {
+            border-color: #ec4899;
+            box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.5);
+        }
+
+        #cancelSearchBtn {
+            margin-left: 0.5rem;
+            background-color: #ec4899;
+            color: white;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        #cancelSearchBtn:hover {
+            background-color: #db2777;
+        }
     </style>
 </head>
 <body>
