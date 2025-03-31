@@ -280,6 +280,50 @@
         .scroll-to-top:hover {
             background-color: #db2777; /* Darker pink on hover */
         }
+
+        /* Dropdown Menu Styling */
+        .dropdown-menu {
+            position: absolute;
+            left: 0;
+            top: 100%;
+            background-color: #ffffff; /* White background */
+            color: #1a202c; /* Dark text */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            border-radius: 0.5rem; /* Rounded corners */
+            overflow: hidden; /* Prevent overflow */
+            z-index: 1000; /* Ensure it appears above other elements */
+            display: none; /* Hidden by default */
+            min-width: 200px; /* Ensure consistent width */
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.75rem 1rem; /* Add padding for better spacing */
+            font-size: 1rem; /* Consistent font size */
+            font-weight: 500; /* Medium weight */
+            color: #1a202c; /* Dark text */
+            text-decoration: none; /* Remove underline */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover effect */
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #ec4899; /* Pink hover background */
+            color: #ffffff; /* White text on hover */
+        }
+
+        .relative.group:hover .dropdown-menu {
+            display: block; /* Show dropdown on hover */
+        }
+
+        /* Adjust dropdown for mobile */
+        @media (max-width: 768px) {
+            .dropdown-menu {
+                position: static; /* Static for mobile */
+                box-shadow: none; /* Remove shadow */
+                border-radius: 0; /* Remove rounded corners */
+                width: 100%; /* Full width */
+            }
+        }
     </style>
 </head>
 <body>
@@ -362,12 +406,12 @@
                         <a href="#" class="hover:underline flex items-center">
                             Products <i class="bx bx-chevron-down ml-1"></i>
                         </a>
-                        <ul class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block dropdown-menu">
-                            <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="wigs">Wigs</a></li>
-                            <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="hair-extensions">Hair Extensions</a></li>
-                            <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="make-up">Make-up</a></li>
-                            <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="perfume">Perfume</a></li>
-                            <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="beauty-products">Beauty Products</a></li>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="filter-category" data-category="wigs">Wigs</a></li>
+                            <li><a href="#" class="filter-category" data-category="hair-extensions">Hair Extensions</a></li>
+                            <li><a href="#" class="filter-category" data-category="make-up">Make-up</a></li>
+                            <li><a href="#" class="filter-category" data-category="perfume">Perfume</a></li>
+                            <li><a href="#" class="filter-category" data-category="beauty-products">Beauty Products</a></li>
                         </ul>
                     </li>
                     <li><a href="#about">About</a></li>
