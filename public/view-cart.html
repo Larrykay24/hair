@@ -246,8 +246,10 @@
 
         // Proceed to Checkout
         document.getElementById('proceedToCheckoutBtn').addEventListener('click', () => {
+            const cart = JSON.parse(localStorage.getItem('cart')) || []; // Ensure cart is fetched from localStorage
             if (cart.length > 0) {
-                localStorage.setItem('checkoutTotal', JSON.stringify(cart.reduce((total, item) => total + item.price * item.quantity, 0)));
+                const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                localStorage.setItem('checkoutTotal', JSON.stringify(total));
                 window.location.href = "checkout.html";
             } else {
                 showNotification("Your cart is empty. Add items to proceed to checkout.");
