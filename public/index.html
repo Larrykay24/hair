@@ -880,14 +880,19 @@
 
         productMenu.addEventListener('click', (event) => {
             event.preventDefault();
-            dropdownMenu.classList.toggle('hidden');
+            dropdownMenu.classList.toggle('hidden'); // Toggle visibility
         });
 
         // Close dropdown when clicking outside
         document.addEventListener('click', (event) => {
             if (!productMenu.contains(event.target)) {
-                dropdownMenu.classList.add('hidden');
+                dropdownMenu.classList.add('hidden'); // Ensure dropdown closes
             }
+        });
+
+        // Prevent dropdown from closing when clicking inside
+        dropdownMenu.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent event from bubbling up
         });
     </script>
 </body>
