@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reniks Beauty Saloon</title>
+    <title>Reniks Beauty Place</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
@@ -358,13 +358,25 @@
                 </button>
                 <ul>
                     <li><a href="#">Home</a></li>
+                    <li class="relative group">
+                        <a href="#" class="hover:underline flex items-center">
+                            Products <i class="bx bx-chevron-down ml-1"></i>
+                        </a>
+                        <ul class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block">
+                            <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="wigs">Wigs</a></li>
+                            <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="hair-extensions">Hair Extensions</a></li>
+                            <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="make-up">Make-up</a></li>
+                            <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="perfume">Perfume</a></li>
+                            <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="beauty-products">Beauty Products</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#services">Services</a></li>
                     <li><a href="#contact">Contact Us</a></li>
                 </ul>
             </div>
             <div id="mobileMenuFooter">
-                <p>&copy; 2023 Reniks Beauty Saloon</p>
+                <p>&copy; 2023 Reniks Beauty Place</p>
                 <p>Developed by <a href="https://codelarry.org.ng">Code Larry</a></p>
             </div>
         </nav>
@@ -414,7 +426,7 @@
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white text-center py-6">
-        <p>&copy; 2023 Reniks Beauty Saloon. All rights reserved.</p>
+        <p>&copy; 2023 Reniks Beauty Place. All rights reserved.</p>
         <p class="text-sm text-gray-400 mt-2">Developed by 
             <a href="https://codelarry.org.ng" class="hover:underline font-bold text-gray-400">Code Larry</a>
         </p>
@@ -742,6 +754,35 @@
         // Scroll to top functionality
         document.querySelector('.scroll-to-top').addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Function to filter products by category
+        function filterProductsByCategory(category) {
+            const productCards = document.getElementById('products').children;
+            let found = false;
+
+            for (let product of productCards) {
+                const productCategory = product.dataset.category; // Assuming each product has a data-category attribute
+                if (productCategory === category || category === 'all') {
+                    product.style.display = 'block';
+                    found = true;
+                } else {
+                    product.style.display = 'none';
+                }
+            }
+
+            if (!found) {
+                document.getElementById('products').innerHTML = "<p class='text-center text-gray-500'>No products found</p>";
+            }
+        }
+
+        // Event listener for category filtering
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('filter-category')) {
+                event.preventDefault();
+                const category = event.target.dataset.category;
+                filterProductsByCategory(category);
+            }
         });
     </script>
 </body>
