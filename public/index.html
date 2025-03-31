@@ -246,7 +246,32 @@
 
         /* Ensure nav menu is visible in desktop mode */
         #navLinks {
-            display: flex !important;
+            display: flex; /* Flex layout for desktop */
+            gap: 1.5rem; /* Add spacing between links */
+            align-items: center; /* Align items vertically */
+        }
+
+        #navLinks a {
+            color: white; /* White text for visibility */
+            font-size: 1rem; /* Consistent font size */
+            font-weight: 500; /* Medium weight */
+            text-decoration: none; /* Remove underline */
+            transition: color 0.3s ease; /* Smooth hover effect */
+        }
+
+        #navLinks a:hover {
+            color: #ec4899; /* Pink hover color */
+        }
+
+        /* Hide mobile menu button in desktop mode */
+        @media (min-width: 768px) {
+            #menuIcon {
+                display: none; /* Hide menu icon on desktop */
+            }
+
+            #mobileMenu {
+                display: none; /* Hide mobile menu on desktop */
+            }
         }
 
         .floating-icon {
@@ -343,6 +368,26 @@
             <div class="container mx-auto flex justify-between items-center">
                 <!-- Logo -->
                 <a href="#" class="text-2xl font-bold">Reniks</a>
+
+                <!-- Navbar Links -->
+                <div id="navLinks" class="hidden md:flex">
+                    <a href="#">Home</a>
+                    <div class="relative group">
+                        <a href="#" class="hover:underline flex items-center">
+                            Products <i class="bx bx-chevron-down ml-1"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="filter-category" data-category="wigs">Wigs</a></li>
+                            <li><a href="#" class="filter-category" data-category="hair-extensions">Hair Extensions</a></li>
+                            <li><a href="#" class="filter-category" data-category="make-up">Make-up</a></li>
+                            <li><a href="#" class="filter-category" data-category="perfume">Perfume</a></li>
+                            <li><a href="#" class="filter-category" data-category="beauty-products">Beauty Products</a></li>
+                        </ul>
+                    </div>
+                    <a href="#about">About</a>
+                    <a href="#services">Services</a>
+                    <a href="#contact">Contact Us</a>
+                </div>
 
                 <!-- Icons -->
                 <div class="flex items-center space-x-6">
