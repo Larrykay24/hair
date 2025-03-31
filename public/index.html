@@ -246,7 +246,7 @@
 
         /* Ensure nav menu is visible in desktop mode */
         #navLinks {
-            display: flex; /* Flex layout for desktop */
+            display: none; /* Hidden by default */
             gap: 1.5rem; /* Add spacing between links */
             align-items: center; /* Align items vertically */
         }
@@ -263,8 +263,12 @@
             color: #ec4899; /* Pink hover color */
         }
 
-        /* Hide mobile menu button in desktop mode */
+        /* Show nav menu and hide mobile menu button in desktop mode */
         @media (min-width: 768px) {
+            #navLinks {
+                display: flex; /* Show nav links on desktop */
+            }
+
             #menuIcon {
                 display: none; /* Hide menu icon on desktop */
             }
@@ -306,14 +310,15 @@
             background-color: #db2777; /* Darker pink on hover */
         }
 
-        /* Dropdown Menu Styling */
+        /* Dropdown Menu Styling with Glassmorphism */
         .dropdown-menu {
             position: absolute;
             left: 0;
             top: 100%;
-            background-color: transparent; /* Removed white background */
-            color: #ffffff; /* White text for better visibility */
-            box-shadow: none; /* Removed shadow */
+            background: rgba(255, 255, 255, 0.2); /* Glassmorphism background */
+            backdrop-filter: blur(10px); /* Blur effect */
+            color: #ffffff; /* White text for visibility */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
             border-radius: 0.5rem; /* Rounded corners */
             overflow: hidden; /* Prevent overflow */
             z-index: 1000; /* Ensure it appears above other elements */
@@ -332,7 +337,7 @@
         }
 
         .dropdown-menu a:hover {
-            background-color: #ec4899; /* Pink hover background */
+            background-color: rgba(236, 72, 153, 0.8); /* Pink hover background with transparency */
             color: #ffffff; /* White text on hover */
         }
 
