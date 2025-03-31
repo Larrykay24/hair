@@ -13,7 +13,7 @@
             font-family: 'Poppins', sans-serif;
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Ensure the body takes the full height of the viewport */
+            min-height: 100vh;
         }
         img {
             max-width: 100%;
@@ -21,55 +21,52 @@
         }
         .container {
             max-width: 100%;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding: 1rem;
         }
         main {
-            flex: 1; /* Push the footer to the bottom */
+            flex: 1;
         }
-        .floating-icon {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .cart-item {
+            background-color: #f9fafb;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .floating-icon a {
-            display: flex;
+        .cart-item img {
+            border-radius: 8px;
+        }
+        .btn {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: #25D366; /* WhatsApp green */
-            color: white;
-            font-size: 24px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: bold;
             transition: background-color 0.3s ease;
         }
-        .floating-icon a:hover {
-            background-color: #1DA851; /* Darker green on hover */
+        .btn:hover {
+            opacity: 0.9;
         }
-        .scroll-to-top {
-            background-color: #ec4899; /* Pink for scroll-to-top */
+        .btn-clear {
+            background-color: #ef4444;
+            color: white;
         }
-        .scroll-to-top:hover {
-            background-color: #db2777; /* Darker pink on hover */
+        .btn-continue {
+            background-color: #6b7280;
+            color: white;
+        }
+        .btn-checkout {
+            background-color: #10b981;
+            color: white;
         }
     </style>
 </head>
-<body class="bg-white text-gray-900">
+<body class="bg-gray-50 text-gray-900">
     <!-- Header Section -->
-    <header class="bg-gray-800 text-white p-4 relative">
+    <header class="bg-gray-800 text-white p-4">
         <div class="container mx-auto flex justify-between items-center">
-            <!-- Logo -->
             <a href="#" class="text-2xl font-bold">Reniks</a>
-
-            <!-- Icons -->
             <div class="flex items-center space-x-6">
-                <!-- Cart Icon -->
                 <button id="cartIcon" class="relative text-2xl">
                     <i class="bx bx-cart"></i>
                     <span id="cartCount" class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full px-2 hidden">0</span>
@@ -78,41 +75,27 @@
         </div>
     </header>
 
-    <!-- Floating Icons -->
-    <div class="floating-icon">
-        <a href="https://wa.me/1234567890" target="_blank" title="Chat on WhatsApp">
-            <i class="bx bxl-whatsapp"></i>
-        </a>
-        <a href="#" class="scroll-to-top" title="Scroll to Top">
-            <i class="bx bx-chevron-up"></i>
-        </a>
-    </div>
-
-    <main>
-        <!-- Cart Items Section -->
-        <section class="container mx-auto px-4 mt-8">
-            <h1 class="text-2xl font-bold mb-4 text-center md:text-left">Your Cart</h1>
-            <div id="cartItems" class="space-y-4">
-                <!-- Cart items will be dynamically added here -->
-            </div>
-            <div class="mt-4">
-                <p class="text-lg font-bold text-center md:text-left">Total: ₦<span id="cartTotal">0</span>,000</p>
-            </div>
-            <div class="mt-4 flex flex-col md:flex-row justify-center md:justify-between items-center space-y-4 md:space-y-0">
-                <button id="clearCartBtn" class="flex items-center bg-red-500 text-white px-4 py-2 rounded-lg">
-                    <i class="bx bx-trash mr-2"></i> Clear Cart
-                </button>
-                <a href="index.html" class="flex items-center bg-gray-500 text-white px-4 py-2 rounded-lg">
-                    <i class="bx bx-shopping-bag mr-2"></i> Continue Shopping
-                </a>
-                <button id="proceedToCheckoutBtn" class="flex items-center bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg text-lg font-semibold">
-                    <i class="bx bx-check-circle mr-2"></i> Proceed to Checkout
-                </button>
-            </div>
-        </section>
+    <main class="container mx-auto mt-8">
+        <h1 class="text-3xl font-bold mb-6 text-center">Your Cart</h1>
+        <div id="cartItems" class="space-y-4">
+            <!-- Cart items will be dynamically added here -->
+        </div>
+        <div class="mt-6 text-center">
+            <p class="text-xl font-bold">Total: ₦<span id="cartTotal">0</span>,000</p>
+        </div>
+        <div class="mt-6 flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
+            <button id="clearCartBtn" class="btn btn-clear">
+                <i class="bx bx-trash mr-2"></i> Clear Cart
+            </button>
+            <a href="index.html" class="btn btn-continue">
+                <i class="bx bx-shopping-bag mr-2"></i> Continue Shopping
+            </a>
+            <button id="proceedToCheckoutBtn" class="btn btn-checkout">
+                <i class="bx bx-check-circle mr-2"></i> Proceed to Checkout
+            </button>
+        </div>
     </main>
 
-    <!-- Footer Section -->
     <footer class="bg-gray-800 text-white text-center py-6 mt-12">
         <p>&copy; 2023 Reniks Beauty Saloon. All rights reserved.</p>
         <p class="text-sm text-gray-400 mt-2">Developed by 
@@ -126,7 +109,7 @@
         const clearCartBtn = document.getElementById('clearCartBtn');
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // ✅ Function to Render Cart Items
+        // Render Cart Items
         function renderCartItems() {
             cartItemsContainer.innerHTML = "";
             let total = 0;
@@ -137,9 +120,9 @@
                 cart.forEach(item => {
                     total += item.price * item.quantity;
                     cartItemsContainer.innerHTML += `
-                        <div class="flex justify-between items-center">
-                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
-                            <div class="flex-1 ml-4">
+                        <div class="cart-item flex items-center space-x-4">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover">
+                            <div class="flex-1">
                                 <h3 class="text-lg font-bold">${item.name}</h3>
                                 <p class="text-pink-500 font-semibold">₦${item.price},000</p>
                                 <div class="flex items-center mt-2">
@@ -157,7 +140,7 @@
             cartTotalElement.textContent = total;
         }
 
-        // ✅ Event Listeners for Cart Actions
+        // Event Listeners for Cart Actions
         document.addEventListener("click", function (event) {
             if (event.target.classList.contains("decrease-quantity")) {
                 const productId = event.target.getAttribute('data-id');
@@ -187,7 +170,7 @@
             }
         });
 
-        // ✅ Clear Cart
+        // Clear Cart
         clearCartBtn.addEventListener('click', () => {
             cart = [];
             localStorage.setItem('cart', JSON.stringify(cart));
@@ -195,23 +178,8 @@
             updateCartIcon();
         });
 
-        // ✅ Render Cart Items on Page Load
+        // Render Cart Items on Page Load
         renderCartItems();
-
-        // Toggle Mobile Menu
-        const menuBtn = document.getElementById('menuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Close Mobile Menu when clicking outside
-        document.addEventListener('click', (event) => {
-            if (!menuBtn.contains(event.target) && !mobileMenu.contains(event.target)) {
-                mobileMenu.classList.add('hidden');
-            }
-        });
 
         // Update cart icon badge
         function updateCartIcon() {
@@ -236,21 +204,16 @@
             document.body.appendChild(notification);
             setTimeout(() => {
                 notification.remove();
-            }, 3000); // Hide after 3 seconds
+            }, 3000);
         }
-
-        // Scroll to top functionality
-        document.querySelector('.scroll-to-top').addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
 
         // Proceed to Checkout
         document.getElementById('proceedToCheckoutBtn').addEventListener('click', () => {
-            const cart = JSON.parse(localStorage.getItem('cart')) || []; // Ensure cart is fetched from localStorage
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
             if (cart.length > 0) {
                 const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
                 localStorage.setItem('checkoutTotal', JSON.stringify(total));
-                window.location.href = "https://www.reniksbeautyplace.com/checkout.html";
+                window.location.href = "checkout.html";
             } else {
                 showNotification("Your cart is empty. Add items to proceed to checkout.");
             }
