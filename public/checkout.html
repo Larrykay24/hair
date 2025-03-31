@@ -37,6 +37,34 @@
         <div class="mt-4">
             <p class="text-lg font-bold text-center">Total: ₦<span id="checkoutTotal">0</span>,000</p>
         </div>
+
+        <!-- Delivery Section -->
+        <div class="mt-6">
+            <h2 class="text-xl font-bold mb-4">Delivery Options</h2>
+            <div class="mb-4">
+                <label for="deliveryMethod" class="block text-gray-700 font-semibold mb-2">Delivery Method</label>
+                <select id="deliveryMethod" class="w-full border-gray-300 rounded-lg">
+                    <option value="doorstep">Doorstep Delivery</option>
+                    <option value="pickup">Pickup</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="state" class="block text-gray-700 font-semibold mb-2">State</label>
+                <select id="state" class="w-full border-gray-300 rounded-lg">
+                    <option value="">Select State</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="lga" class="block text-gray-700 font-semibold mb-2">Local Government Area (LGA)</label>
+                <select id="lga" class="w-full border-gray-300 rounded-lg">
+                    <option value="">Select LGA</option>
+                </select>
+            </div>
+            <div class="mt-4">
+                <p class="text-lg font-bold">Delivery Cost: ₦<span id="deliveryCost">0</span>,000</p>
+            </div>
+        </div>
+
         <div id="paypal-button-container" class="mt-6 flex justify-center"></div>
     </main>
 
@@ -51,7 +79,12 @@
     <script>
         const checkoutItemsContainer = document.getElementById('checkoutItems');
         const checkoutTotalElement = document.getElementById('checkoutTotal');
+        const deliveryMethodElement = document.getElementById('deliveryMethod');
+        const stateElement = document.getElementById('state');
+        const lgaElement = document.getElementById('lga');
+        const deliveryCostElement = document.getElementById('deliveryCost');
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let deliveryCost = 0;
 
         // Function to render checkout items
         function renderCheckoutItems() {
@@ -79,13 +112,57 @@
             checkoutTotalElement.textContent = total;
         }
 
+        // Function to calculate delivery cost
+        function calculateDeliveryCost() {
+            const deliveryMethod = deliveryMethodElement.value;
+            const lga = lgaElement.value;
+
+            if (deliveryMethod === 'doorstep') {
+                if (lga === 'magodo') {
+                    deliveryCost = 1; // ₦1,000 for doorstep delivery within Magodo
+                } else if (lga === 'ikeja') {
+                    deliveryCost = 2; // ₦2,000 for Ikeja
+                } else if (lga === 'lekki') {
+                    deliveryCost = 3; // ₦3,000 for Lekki
+                } else if (lga === 'surulere') {
+                    deliveryCost = 2.5; // ₦2,500 for Surulere
+                }
+            } else if (deliveryMethod === 'pickup') {
+                if (lga === 'magodo') {
+                    deliveryCost = 0.5; // ₦500 for pickup within Magodo
+                } else if (lga === 'ikeja') {
+                    deliveryCost = 1; // ₦1,000 for Ikeja
+                } else if (lga === 'lekki') {
+                    deliveryCost = 1.5; // ₦1,500 for Lekki
+                } else if (lga === 'surulere') {
+                    deliveryCost = 1.2; // ₦1,200 for Surulere
+                }
+            }
+
+            deliveryCostElement.textContent = deliveryCost;
+            updateTotal();
+        }
+
+        // Function to update total cost
+        function updateTotal() {
+            const cartTotal = JSON.parse(localStorage.getItem('checkoutTotal')) || 0;
+            const total = cartTotal + deliveryCost * 1000; // Convert delivery cost to ₦
+            checkoutTotalElement.textContent = total / 1000; // Display in ₦
+        }
+
+        // Event listeners for delivery options
+        deliveryMethodElement.addEventListener('change', calculateDeliveryCost);
+        stateElement.addEventListener('change', calculateDeliveryCost);
+        lgaElement.addEventListener('change', calculateDeliveryCost);
+
         // Render checkout items on page load
         renderCheckoutItems();
+        calculateDeliveryCost();
 
         // Initialize PayPal button
         paypal.Buttons({
             createOrder: function(data, actions) {
-                const totalUSD = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) / 1000; // Convert to USD
+                const totalUSD = (JSON.parse(localStorage.getItem('checkoutTotal')) || 0 + deliveryCost * 1000) / 1000; // Convert to USD
                 return actions.order.create({
                     purchase_units: [{
                         amount: {
@@ -99,6 +176,7 @@
                     alert('Transaction completed by ' + details.payer.name.given_name);
                     cart = [];
                     localStorage.setItem('cart', JSON.stringify(cart));
+                    localStorage.removeItem('checkoutTotal');
                     window.location.href = "index.html"; // Redirect to home page after successful payment
                 });
             },
@@ -107,6 +185,47 @@
                 alert('An error occurred during the transaction. Please try again.');
             }
         }).render('#paypal-button-container');
+
+        // Fetch states and LGAs from API
+        async function fetchLocations() {
+            try {
+                const response = await fetch('https://nigerian-locations-api.herokuapp.com/api/v1/states');
+                const data = await response.json();
+
+                // Populate states dropdown
+                data.forEach(state => {
+                    const option = document.createElement('option');
+                    option.value = state.name.toLowerCase();
+                    option.textContent = state.name;
+                    stateElement.appendChild(option);
+                });
+
+                // Update LGAs when a state is selected
+                stateElement.addEventListener('change', () => {
+                    const selectedState = stateElement.value;
+                    const selectedStateData = data.find(state => state.name.toLowerCase() === selectedState);
+
+                    // Clear previous LGAs
+                    lgaElement.innerHTML = '<option value="">Select LGA</option>';
+
+                    // Populate LGAs dropdown
+                    if (selectedStateData) {
+                        selectedStateData.lgas.forEach(lga => {
+                            const option = document.createElement('option');
+                            option.value = lga.toLowerCase();
+                            option.textContent = lga;
+                            lgaElement.appendChild(option);
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching locations:', error);
+                alert('Failed to load states and LGAs. Please try again later.');
+            }
+        }
+
+        // Call fetchLocations on page load
+        fetchLocations();
     </script>
 </body>
 </html>

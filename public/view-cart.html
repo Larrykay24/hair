@@ -246,6 +246,7 @@
 
         // Proceed to Checkout
         document.getElementById('proceedToCheckoutBtn').addEventListener('click', () => {
+            localStorage.setItem('checkoutTotal', JSON.stringify(cart.reduce((total, item) => total + item.price * item.quantity, 0)));
             window.location.href = "checkout.html";
         });
     </script>
