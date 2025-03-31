@@ -362,7 +362,7 @@
                         <a href="#" class="hover:underline flex items-center">
                             Products <i class="bx bx-chevron-down ml-1"></i>
                         </a>
-                        <ul class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block">
+                        <ul class="absolute left-0 mt-2 hidden bg-white text-gray-900 shadow-md rounded-md w-40 group-hover:block dropdown-menu">
                             <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="wigs">Wigs</a></li>
                             <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="hair-extensions">Hair Extensions</a></li>
                             <li><a href="#" class="block px-4 py-2 hover:bg-pink-500 hover:text-white filter-category" data-category="make-up">Make-up</a></li>
@@ -782,6 +782,22 @@
                 event.preventDefault();
                 const category = event.target.dataset.category;
                 filterProductsByCategory(category);
+            }
+        });
+
+        // Fix dropdown functionality for "Products" menu
+        const productMenu = document.querySelector('.relative.group');
+        const dropdownMenu = productMenu.querySelector('.dropdown-menu');
+
+        productMenu.addEventListener('click', (event) => {
+            event.preventDefault();
+            dropdownMenu.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!productMenu.contains(event.target)) {
+                dropdownMenu.classList.add('hidden');
             }
         });
     </script>
