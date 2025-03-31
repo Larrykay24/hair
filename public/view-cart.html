@@ -231,7 +231,7 @@
         // Function to show notification
         function showNotification(message) {
             const notification = document.createElement('div');
-            notification.className = 'notification';
+            notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg';
             notification.textContent = message;
             document.body.appendChild(notification);
             setTimeout(() => {
@@ -246,8 +246,12 @@
 
         // Proceed to Checkout
         document.getElementById('proceedToCheckoutBtn').addEventListener('click', () => {
-            localStorage.setItem('checkoutTotal', JSON.stringify(cart.reduce((total, item) => total + item.price * item.quantity, 0)));
-            window.location.href = "checkout.html";
+            if (cart.length > 0) {
+                localStorage.setItem('checkoutTotal', JSON.stringify(cart.reduce((total, item) => total + item.price * item.quantity, 0)));
+                window.location.href = "checkout.html";
+            } else {
+                showNotification("Your cart is empty. Add items to proceed to checkout.");
+            }
         });
     </script>
 </body>

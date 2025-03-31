@@ -39,26 +39,35 @@
         </div>
 
         <!-- Delivery Section -->
-        <div class="mt-6">
+        <div class="mt-6 bg-gray-100 p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-bold mb-4">Delivery Options</h2>
             <div class="mb-4">
                 <label for="deliveryMethod" class="block text-gray-700 font-semibold mb-2">Delivery Method</label>
-                <select id="deliveryMethod" class="w-full border-gray-300 rounded-lg">
-                    <option value="doorstep">Doorstep Delivery</option>
-                    <option value="pickup">Pickup</option>
-                </select>
+                <div class="relative">
+                    <select id="deliveryMethod" class="w-full border-gray-300 rounded-lg px-4 py-2 bg-white shadow-sm focus:ring-2 focus:ring-pink-500">
+                        <option value="doorstep">Doorstep Delivery</option>
+                        <option value="pickup">Pickup</option>
+                    </select>
+                    <i class="bx bx-chevron-down absolute right-4 top-3 text-gray-500"></i>
+                </div>
             </div>
             <div class="mb-4">
                 <label for="state" class="block text-gray-700 font-semibold mb-2">State</label>
-                <select id="state" class="w-full border-gray-300 rounded-lg">
-                    <option value="">Select State</option>
-                </select>
+                <div class="relative">
+                    <select id="state" class="w-full border-gray-300 rounded-lg px-4 py-2 bg-white shadow-sm focus:ring-2 focus:ring-pink-500">
+                        <option value="">Select State</option>
+                    </select>
+                    <i class="bx bx-chevron-down absolute right-4 top-3 text-gray-500"></i>
+                </div>
             </div>
             <div class="mb-4">
                 <label for="lga" class="block text-gray-700 font-semibold mb-2">Local Government Area (LGA)</label>
-                <select id="lga" class="w-full border-gray-300 rounded-lg">
-                    <option value="">Select LGA</option>
-                </select>
+                <div class="relative">
+                    <select id="lga" class="w-full border-gray-300 rounded-lg px-4 py-2 bg-white shadow-sm focus:ring-2 focus:ring-pink-500">
+                        <option value="">Select LGA</option>
+                    </select>
+                    <i class="bx bx-chevron-down absolute right-4 top-3 text-gray-500"></i>
+                </div>
             </div>
             <div class="mt-4">
                 <p class="text-lg font-bold">Delivery Cost: ₦<span id="deliveryCost">0</span>,000</p>
