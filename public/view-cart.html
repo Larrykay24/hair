@@ -250,7 +250,7 @@
             if (cart.length > 0) {
                 const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
                 localStorage.setItem('checkoutTotal', JSON.stringify(total));
-                window.location.href = "checkout.html";
+                window.location.href = "https://www.reniksbeautyplace.com/checkout.html";
             } else {
                 showNotification("Your cart is empty. Add items to proceed to checkout.");
             }
