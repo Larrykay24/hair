@@ -195,46 +195,46 @@
             }
         }).render('#paypal-button-container');
 
-        // Fetch states and LGAs from API
-        async function fetchLocations() {
-            try {
-                const response = await fetch('https://nga-states-lga.onrender.com/fetch');
-                const data = await response.json();
+        // Fetch all States
+        fetch('https://nga-states-lga.onrender.com/fetch')
+            .then((res) => res.json())
+            .then((data) => {
+                const stateDropdown = document.getElementById("state");
+                for (let index = 0; index < Object.keys(data).length; index++) {
+                    const option = document.createElement("option");
+                    option.text = data[index];
+                    option.value = data[index];
+                    stateDropdown.add(option);
+                }
+            });
 
-                // Populate states dropdown
-                data.forEach(state => {
-                    const option = document.createElement('option');
-                    option.value = state.name.toLowerCase();
-                    option.textContent = state.name;
-                    stateElement.appendChild(option);
-                });
-
-                // Update LGAs when a state is selected
-                stateElement.addEventListener('change', () => {
-                    const selectedState = stateElement.value;
-                    const selectedStateData = data.find(state => state.name.toLowerCase() === selectedState);
+        // Fetch Local Governments based on selected state
+        function selectLGA(target) {
+            const state = target.value;
+            fetch('https://nga-states-lga.onrender.com/?state=' + state)
+                .then((res) => res.json())
+                .then((data) => {
+                    const lgaDropdown = document.getElementById("lga");
 
                     // Clear previous LGAs
-                    lgaElement.innerHTML = '<option value="">Select LGA</option>';
+                    while (lgaDropdown.options.length > 0) {
+                        lgaDropdown.remove(0);
+                    }
 
                     // Populate LGAs dropdown
-                    if (selectedStateData) {
-                        selectedStateData.lgas.forEach(lga => {
-                            const option = document.createElement('option');
-                            option.value = lga.toLowerCase();
-                            option.textContent = lga;
-                            lgaElement.appendChild(option);
-                        });
+                    for (let index = 0; index < Object.keys(data).length; index++) {
+                        const option = document.createElement("option");
+                        option.text = data[index];
+                        option.value = data[index];
+                        lgaDropdown.add(option);
                     }
                 });
-            } catch (error) {
-                console.error('Error fetching locations:', error);
-                alert('Failed to load states and LGAs. Please try again later.');
-            }
         }
 
-        // Call fetchLocations on page load
-        fetchLocations();
+        // Attach event listener to state dropdown
+        document.getElementById("state").addEventListener("change", function () {
+            selectLGA(this);
+        });
     </script>
 </body>
 </html>
