@@ -36,227 +36,7 @@
     <div id="productsList" class="mt-10"></div>
   </div>
 
-  <!-- Firebase Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-  <script>
-    // Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
-      authDomain: "hair-vstore.firebaseapp.com",
-      projectId: "hair-vstore",
-      storageBucket: "hair-vstore.appspot.com",
-      messagingSenderId: "172889498629",
-      appId: "1:172889498629:web:5b66a3eec207839a25286c"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-    const auth = firebase.auth();
-
-    // Helper to show notification
-    function showNotification(message, color = 'bg-red-500') {
-      const notification = document.getElementById('notification');
-      notification.textContent = message;
-      notification.className = `fixed top-6 left-1/2 transform -translate-x-1/2 ${color} text-white px-6 py-3 rounded shadow-lg z-50`;
-      notification.classList.remove('hidden');
-      setTimeout(() => {
-        notification.classList.add('hidden');
-      }, 2500);
-    }
-
-    // Login Validation
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const email = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-
-      auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          document.getElementById('login-section').classList.add('hidden');
-          document.getElementById('upload-section').classList.remove('hidden');
-          showNotification("Login successful!", "bg-green-600");
-        })
-        .catch((error) => {
-          showNotification("Access Denied! Incorrect credentials.", "bg-red-500");
-          console.error(error); // For debugging
-        });
-    });
-
-    // Logout functionality
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-      auth.signOut().then(() => {
-        document.getElementById('upload-section').classList.add('hidden');
-        document.getElementById('login-section').classList.remove('hidden');
-        showNotification("Logged out successfully", "bg-green-600");
-      });
-    });
-
-    // On Auth State Change
-    auth.onAuthStateChanged(user => {
-      if (!user) {
-        document.getElementById('upload-section').classList.add('hidden');
-        document.getElementById('login-section').classList.remove('hidden');
-      }
-    });
-
-    // Product Preview and Upload Logic
-    let previewData = null;
-    let previewImageFile = null;
-
-    document.getElementById('product-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const name = this.name.value.trim();
-      const price = parseFloat(this.price.value);
-      const description = this.description.value.trim();
-      const imageFile = this.image.files[0];
-
-      if (!name || !price || !description || !imageFile) {
-        showNotification("Please complete all fields.");
-        return;
-      }
-
-      // Show preview modal
-      previewData = { name, price, description };
-      previewImageFile = imageFile;
-
-      document.getElementById('previewName').textContent = name;
-      document.getElementById('previewPrice').textContent = "₦" + price.toLocaleString();
-      document.getElementById('previewDescription').textContent = description;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('previewImage').src = e.target.result;
-      };
-      reader.readAsDataURL(imageFile);
-
-      document.getElementById('previewModal').classList.remove('hidden');
-    });
-
-    // Cancel preview
-    document.getElementById('cancelPreview').onclick = function() {
-      document.getElementById('previewModal').classList.add('hidden');
-      previewData = null;
-      previewImageFile = null;
-    };
-
-    // Confirm upload
-    document.getElementById('confirmUpload').onclick = async function() {
-      if (!previewData || !previewImageFile) return;
-
-      try {
-        const imageRef = storage.ref(`products/${Date.now()}_${previewImageFile.name}`);
-        await imageRef.put(previewImageFile);
-        const imageUrl = await imageRef.getDownloadURL();
-
-        await db.collection("products").add({
-          name: previewData.name,
-          price: previewData.price,
-          description: previewData.description,
-          image: imageUrl,
-        });
-
-        document.getElementById('previewModal').classList.add('hidden');
-        const successModal = document.getElementById('successModal');
-        successModal.classList.remove('hidden');
-        document.getElementById('product-form').reset();
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      } catch (err) {
-        showNotification("Upload failed. Please try again.");
-        document.getElementById('previewModal').classList.add('hidden');
-      }
-    };
-
-    // Fetch and display products for editing
-    async function loadProductsForEdit() {
-      const productsList = document.getElementById('productsList');
-      productsList.innerHTML = '<div class="text-center text-gray-500">Loading products...</div>';
-      const snapshot = await db.collection('products').orderBy('name').get();
-      if (snapshot.empty) {
-        productsList.innerHTML = '<div class="text-center text-gray-500">No products found.</div>';
-        return;
-      }
-      let html = '<div class="overflow-x-auto"><table class="min-w-full text-left"><thead><tr><th class="px-4 py-2">Name</th><th class="px-4 py-2">Price</th><th class="px-4 py-2">Edit</th></tr></thead><tbody>';
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        html += `<tr>
-          <td class="border px-4 py-2">${d.name}</td>
-          <td class="border px-4 py-2">₦${Number(d.price).toLocaleString()}</td>
-          <td class="border px-4 py-2">
-            <button class="editBtn bg-yellow-500 text-white px-3 py-1 rounded" data-id="${doc.id}">Edit</button>
-          </td>
-        </tr>`;
-      });
-      html += '</tbody></table></div>';
-      productsList.innerHTML = html;
-
-      // Attach edit button listeners
-      document.querySelectorAll('.editBtn').forEach(btn => {
-        btn.addEventListener('click', async function() {
-          const id = this.getAttribute('data-id');
-          const docSnap = await db.collection('products').doc(id).get();
-          if (!docSnap.exists) return showNotification("Product not found");
-          const data = docSnap.data();
-          document.getElementById('editName').value = data.name;
-          document.getElementById('editPrice').value = data.price;
-          document.getElementById('editDescription').value = data.description;
-          document.getElementById('editImagePreview').src = data.image || '';
-          document.getElementById('editModal').classList.remove('hidden');
-          document.getElementById('editProductForm').setAttribute('data-id', id);
-          document.getElementById('editImage').value = '';
-        });
-      });
-    }
-
-    // Hide edit modal
-    document.getElementById('cancelEdit').addEventListener('click', function() {
-      document.getElementById('editModal').classList.add('hidden');
-    });
-
-    // Handle edit form submit
-    document.getElementById('editProductForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const id = this.getAttribute('data-id');
-      const name = document.getElementById('editName').value.trim();
-      const price = parseFloat(document.getElementById('editPrice').value);
-      const description = document.getElementById('editDescription').value.trim();
-      const imageInput = document.getElementById('editImage');
-      let imageUrl = document.getElementById('editImagePreview').src;
-
-      // If a new image is selected, upload it
-      if (imageInput.files && imageInput.files[0]) {
-        const imageFile = imageInput.files[0];
-        const imageRef = storage.ref(`products/${Date.now()}_${imageFile.name}`);
-        await imageRef.put(imageFile);
-        imageUrl = await imageRef.getDownloadURL();
-      }
-
-      await db.collection('products').doc(id).update({
-        name,
-        price,
-        description,
-        image: imageUrl
-      });
-
-      showNotification("Product updated!", "bg-green-600");
-      document.getElementById('editModal').classList.add('hidden');
-      loadProductsForEdit();
-    });
-
-    // Load products after login
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        loadProductsForEdit();
-      }
-    });
-  </script>
-
-  <!-- Notification Modal -->
+<!-- Notification Modal -->
   <div id="notification" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded shadow-lg z-50 hidden"></div>
 
   <!-- Add product preview modal before the successModal div -->
@@ -315,5 +95,229 @@
       100% { transform: rotate(360deg); }
     }
   </style>
+
+
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Firebase Config
+      const firebaseConfig = {
+        apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
+        authDomain: "hair-vstore.firebaseapp.com",
+        projectId: "hair-vstore",
+        storageBucket: "hair-vstore.appspot.com",
+        messagingSenderId: "172889498629",
+        appId: "1:172889498629:web:5b66a3eec207839a25286c"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      const storage = firebase.storage();
+      const auth = firebase.auth();
+
+      // Helper to show notification
+      function showNotification(message, color = 'bg-red-500') {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `fixed top-6 left-1/2 transform -translate-x-1/2 ${color} text-white px-6 py-3 rounded shadow-lg z-50`;
+        notification.classList.remove('hidden');
+        setTimeout(() => {
+          notification.classList.add('hidden');
+        }, 2500);
+      }
+
+      // Login Validation
+      document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        auth.signInWithEmailAndPassword(email, password)
+          .then(() => {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('upload-section').classList.remove('hidden');
+            showNotification("Login successful!", "bg-green-600");
+          })
+          .catch((error) => {
+            showNotification("Access Denied! Incorrect credentials.", "bg-red-500");
+            console.error(error); // For debugging
+          });
+      });
+
+      // Logout functionality
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        auth.signOut().then(() => {
+          document.getElementById('upload-section').classList.add('hidden');
+          document.getElementById('login-section').classList.remove('hidden');
+          showNotification("Logged out successfully", "bg-green-600");
+        });
+      });
+
+      // On Auth State Change
+      auth.onAuthStateChanged(user => {
+        if (!user) {
+          document.getElementById('upload-section').classList.add('hidden');
+          document.getElementById('login-section').classList.remove('hidden');
+        }
+      });
+
+      // Product Preview and Upload Logic
+      let previewData = null;
+      let previewImageFile = null;
+
+      document.getElementById('product-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = this.name.value.trim();
+        const price = parseFloat(this.price.value);
+        const description = this.description.value.trim();
+        const imageFile = this.image.files[0];
+
+        if (!name || !price || !description || !imageFile) {
+          showNotification("Please complete all fields.");
+          return;
+        }
+
+        // Show preview modal
+        previewData = { name, price, description };
+        previewImageFile = imageFile;
+
+        document.getElementById('previewName').textContent = name;
+        document.getElementById('previewPrice').textContent = "₦" + price.toLocaleString();
+        document.getElementById('previewDescription').textContent = description;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('previewImage').src = e.target.result;
+        };
+        reader.readAsDataURL(imageFile);
+
+        document.getElementById('previewModal').classList.remove('hidden');
+      });
+
+      // Cancel preview
+      document.getElementById('cancelPreview').onclick = function() {
+        document.getElementById('previewModal').classList.add('hidden');
+        previewData = null;
+        previewImageFile = null;
+      };
+
+      // Confirm upload
+      document.getElementById('confirmUpload').onclick = async function() {
+        if (!previewData || !previewImageFile) return;
+
+        try {
+          const imageRef = storage.ref(`products/${Date.now()}_${previewImageFile.name}`);
+          await imageRef.put(previewImageFile);
+          const imageUrl = await imageRef.getDownloadURL();
+
+          await db.collection("products").add({
+            name: previewData.name,
+            price: previewData.price,
+            description: previewData.description,
+            image: imageUrl,
+          });
+
+          document.getElementById('previewModal').classList.add('hidden');
+          const successModal = document.getElementById('successModal');
+          successModal.classList.remove('hidden');
+          document.getElementById('product-form').reset();
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } catch (err) {
+          showNotification("Upload failed. Please try again.");
+          document.getElementById('previewModal').classList.add('hidden');
+        }
+      };
+
+      // Fetch and display products for editing
+      async function loadProductsForEdit() {
+        const productsList = document.getElementById('productsList');
+        productsList.innerHTML = '<div class="text-center text-gray-500">Loading products...</div>';
+        const snapshot = await db.collection('products').orderBy('name').get();
+        if (snapshot.empty) {
+          productsList.innerHTML = '<div class="text-center text-gray-500">No products found.</div>';
+          return;
+        }
+        let html = '<div class="overflow-x-auto"><table class="min-w-full text-left"><thead><tr><th class="px-4 py-2">Name</th><th class="px-4 py-2">Price</th><th class="px-4 py-2">Edit</th></tr></thead><tbody>';
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          html += `<tr>
+            <td class="border px-4 py-2">${d.name}</td>
+            <td class="border px-4 py-2">₦${Number(d.price).toLocaleString()}</td>
+            <td class="border px-4 py-2">
+              <button class="editBtn bg-yellow-500 text-white px-3 py-1 rounded" data-id="${doc.id}">Edit</button>
+            </td>
+          </tr>`;
+        });
+        html += '</tbody></table></div>';
+        productsList.innerHTML = html;
+
+        // Attach edit button listeners
+        document.querySelectorAll('.editBtn').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            const id = this.getAttribute('data-id');
+            const docSnap = await db.collection('products').doc(id).get();
+            if (!docSnap.exists) return showNotification("Product not found");
+            const data = docSnap.data();
+            document.getElementById('editName').value = data.name;
+            document.getElementById('editPrice').value = data.price;
+            document.getElementById('editDescription').value = data.description;
+            document.getElementById('editImagePreview').src = data.image || '';
+            document.getElementById('editModal').classList.remove('hidden');
+            document.getElementById('editProductForm').setAttribute('data-id', id);
+            document.getElementById('editImage').value = '';
+          });
+        });
+      }
+
+      // Hide edit modal
+      document.getElementById('cancelEdit').addEventListener('click', function() {
+        document.getElementById('editModal').classList.add('hidden');
+      });
+
+      // Handle edit form submit
+      document.getElementById('editProductForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const id = this.getAttribute('data-id');
+        const name = document.getElementById('editName').value.trim();
+        const price = parseFloat(document.getElementById('editPrice').value);
+        const description = document.getElementById('editDescription').value.trim();
+        const imageInput = document.getElementById('editImage');
+        let imageUrl = document.getElementById('editImagePreview').src;
+
+        // If a new image is selected, upload it
+        if (imageInput.files && imageInput.files[0]) {
+          const imageFile = imageInput.files[0];
+          const imageRef = storage.ref(`products/${Date.now()}_${imageFile.name}`);
+          await imageRef.put(imageFile);
+          imageUrl = await imageRef.getDownloadURL();
+        }
+
+        await db.collection('products').doc(id).update({
+          name,
+          price,
+          description,
+          image: imageUrl
+        });
+
+        showNotification("Product updated!", "bg-green-600");
+        document.getElementById('editModal').classList.add('hidden');
+        loadProductsForEdit();
+      });
+
+      // Load products after login
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          loadProductsForEdit();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
