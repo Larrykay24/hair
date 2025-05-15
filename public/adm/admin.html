@@ -160,7 +160,11 @@
 
       // On Auth State Change
       auth.onAuthStateChanged(user => {
-        if (!user) {
+        if (user) {
+          document.getElementById('login-section').classList.add('hidden');
+          document.getElementById('upload-section').classList.remove('hidden');
+          loadProductsForEdit();
+        } else {
           document.getElementById('upload-section').classList.add('hidden');
           document.getElementById('login-section').classList.remove('hidden');
         }
