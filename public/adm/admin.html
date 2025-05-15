@@ -136,14 +136,15 @@
       document.getElementById('previewModal').classList.remove('hidden');
     });
 
-    // Handle preview modal buttons
-    document.getElementById('cancelPreview').addEventListener('click', function() {
+    // Cancel preview
+    document.getElementById('cancelPreview').onclick = function() {
       document.getElementById('previewModal').classList.add('hidden');
       previewData = null;
       previewImageFile = null;
-    });
+    };
 
-    document.getElementById('confirmUpload').addEventListener('click', async function() {
+    // Confirm upload
+    document.getElementById('confirmUpload').onclick = async function() {
       if (!previewData || !previewImageFile) return;
 
       try {
@@ -169,7 +170,7 @@
         showNotification("Upload failed. Please try again.");
         document.getElementById('previewModal').classList.add('hidden');
       }
-    });
+    };
 
     // Fetch and display products for editing
     async function loadProductsForEdit() {
