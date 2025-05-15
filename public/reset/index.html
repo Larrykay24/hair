@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Set New Password - Hair VStore</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body class="bg-pink-50 min-h-screen flex items-center justify-center px-4">
+
+  <div class="bg-white w-full max-w-md p-8 rounded-2xl shadow-xl">
+    <div class="flex items-center space-x-2 mb-6">
+      <i class='bx bx-key text-3xl text-pink-500'></i>
+      <h2 class="text-2xl font-bold text-pink-600">Set New Password</h2>
+    </div>
+
+    <form id="password-form" class="space-y-4">
+      <input type="password" id="new-password" placeholder="Enter new password" class="w-full p-3 border rounded-lg focus:outline-none" required />
+      <input type="password" id="confirm-password" placeholder="Confirm new password" class="w-full p-3 border rounded-lg focus:outline-none" required />
+      <button type="submit" class="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition">
+        <i class='bx bx-save mr-1'></i> Save Password
+      </button>
+    </form>
+
+    <p id="error" class="text-sm text-red-500 mt-3 hidden"></p>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
+      authDomain: "hair-vstore.firebaseapp.com",
+      projectId: "hair-vstore",
+      storageBucket: "hair-vstore.appspot.com",
+      messagingSenderId: "172889498629",
+      appId: "1:172889498629:web:5b66a3eec207839a25286c"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    document.getElementById('password-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const newPassword = document.getElementById('new-password').value.trim();
+      const confirmPassword = document.getElementById('confirm-password').value.trim();
+      const errorDisplay = document.getElementById('error');
+
+      if (newPassword.length < 6) {
+        errorDisplay.textContent = "Password must be at least 6 characters.";
+        errorDisplay.classList.remove('hidden');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        errorDisplay.textContent = "Passwords do not match.";
+        errorDisplay.classList.remove('hidden');
+        return;
+      }
+
+      errorDisplay.classList.add('hidden');
+
+      const user = firebase.auth().currentUser;
+      if (user) {
+        user.updatePassword(newPassword)
+          .then(() => {
+            alert("Password reset successful!");
+            window.location.href = "https://reniksbeautyplace.com/adm/admin.html";
+          })
+          .catch((error) => {
+            errorDisplay.textContent = error.message || "Failed to reset password.";
+            errorDisplay.classList.remove('hidden');
+          });
+      } else {
+        errorDisplay.textContent = "You must be logged in to reset your password.";
+        errorDisplay.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
