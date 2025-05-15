@@ -14,8 +14,8 @@
   <div id="login-section" class="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
     <h2 class="text-2xl font-bold text-pink-600 mb-4 text-center">Admin Login</h2>
     <form id="login-form" class="space-y-4">
-      <input type="text" id="username" placeholder="Enter Email" class="w-full p-3 border rounded-lg focus:outline-none" />
-      <input type="password" id="password" placeholder="Enter Password" class="w-full p-3 border rounded-lg focus:outline-none" />
+      <input type="email" id="username" placeholder="Enter Email" class="w-full p-3 border rounded-lg focus:outline-none" required />
+      <input type="password" id="password" placeholder="Enter Password" class="w-full p-3 border rounded-lg focus:outline-none" required />
       <button type="submit" class="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition">Login</button>
     </form>
   </div>
@@ -78,8 +78,9 @@
           document.getElementById('upload-section').classList.remove('hidden');
           showNotification("Login successful!", "bg-green-600");
         })
-        .catch(() => {
+        .catch((error) => {
           showNotification("Access Denied! Incorrect credentials.", "bg-red-500");
+          console.error(error); // For debugging
         });
     });
 
