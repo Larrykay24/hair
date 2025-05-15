@@ -6,6 +6,7 @@
   <title>Admin Panel - Reniks Beauty</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 </head>
 <body class="bg-pink-50 min-h-screen flex items-center justify-center">
 
@@ -13,15 +14,17 @@
   <div id="login-section" class="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
     <h2 class="text-2xl font-bold text-pink-600 mb-4 text-center">Admin Login</h2>
     <form id="login-form" class="space-y-4">
-      <input type="text" id="username" placeholder="Enter Username" class="w-full p-3 border rounded-lg focus:outline-none" />
+      <input type="text" id="username" placeholder="Enter Email" class="w-full p-3 border rounded-lg focus:outline-none" />
       <input type="password" id="password" placeholder="Enter Password" class="w-full p-3 border rounded-lg focus:outline-none" />
-      <input type="text" id="secret" placeholder="Enter Secret Phrase" class="w-full p-3 border rounded-lg focus:outline-none" />
       <button type="submit" class="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition">Login</button>
     </form>
   </div>
 
   <!-- Upload Section -->
   <div id="upload-section" class="hidden bg-white p-6 rounded-xl shadow-xl w-full max-w-2xl">
+    <div class="flex justify-end mb-4">
+      <button id="logoutBtn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition">Logout</button>
+    </div>
     <h2 class="text-2xl font-bold text-pink-600 mb-4 text-center">Upload New Product</h2>
     <form id="product-form" class="space-y-4">
       <input type="text" name="name" placeholder="e.g. Luxury Wig 22 Inches" class="w-full p-3 border rounded-lg" required />
@@ -50,29 +53,58 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const storage = firebase.storage();
+    const auth = firebase.auth();
+
+    // Helper to show notification
+    function showNotification(message, color = 'bg-red-500') {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `fixed top-6 left-1/2 transform -translate-x-1/2 ${color} text-white px-6 py-3 rounded shadow-lg z-50`;
+      notification.classList.remove('hidden');
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 2500);
+    }
 
     // Login Validation
     document.getElementById('login-form').addEventListener('submit', function(e) {
       e.preventDefault();
-      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
-      const secret = document.getElementById('secret').value.trim();
 
-      const validate = (u, p, s) => {
-        const x = btoa("Carpets"); // encoded secret
-        return u === "admin" && p === "1000" && btoa(s) === x;
-      };
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          document.getElementById('login-section').classList.add('hidden');
+          document.getElementById('upload-section').classList.remove('hidden');
+          showNotification("Login successful!", "bg-green-600");
+        })
+        .catch(() => {
+          showNotification("Access Denied! Incorrect credentials.", "bg-red-500");
+        });
+    });
 
-      if (validate(username, password, secret)) {
-        document.getElementById('login-section').classList.add('hidden');
-        document.getElementById('upload-section').classList.remove('hidden');
-      } else {
-        alert("Access Denied! Incorrect credentials or secret.");
+    // Logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      auth.signOut().then(() => {
+        document.getElementById('upload-section').classList.add('hidden');
+        document.getElementById('login-section').classList.remove('hidden');
+        showNotification("Logged out successfully", "bg-green-600");
+      });
+    });
+
+    // On Auth State Change
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        document.getElementById('upload-section').classList.add('hidden');
+        document.getElementById('login-section').classList.remove('hidden');
       }
     });
 
-    // Product Upload Logic
-    document.getElementById('product-form').addEventListener('submit', async function(e) {
+    // Product Preview and Upload Logic
+    let previewData = null;
+    let previewImageFile = null;
+
+    document.getElementById('product-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const name = this.name.value.trim();
       const price = parseFloat(this.price.value);
@@ -80,25 +112,103 @@
       const imageFile = this.image.files[0];
 
       if (!name || !price || !description || !imageFile) {
-        alert("Please complete all fields.");
+        showNotification("Please complete all fields.");
         return;
       }
 
-      const imageRef = storage.ref(`products/${Date.now()}_${imageFile.name}`);
-      await imageRef.put(imageFile);
-      const imageUrl = await imageRef.getDownloadURL();
+      // Show preview modal
+      previewData = { name, price, description };
+      previewImageFile = imageFile;
 
-      await db.collection("products").add({
-        name,
-        price,
-        description,
-        imageUrl,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      document.getElementById('previewName').textContent = name;
+      document.getElementById('previewPrice').textContent = "₦" + price.toLocaleString();
+      document.getElementById('previewDescription').textContent = description;
 
-      alert("Product uploaded successfully!");
-      this.reset();
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('previewImage').src = e.target.result;
+      };
+      reader.readAsDataURL(imageFile);
+
+      document.getElementById('previewModal').classList.remove('hidden');
+    });
+
+    // Handle preview modal buttons
+    document.getElementById('cancelPreview').addEventListener('click', function() {
+      document.getElementById('previewModal').classList.add('hidden');
+      previewData = null;
+      previewImageFile = null;
+    });
+
+    document.getElementById('confirmUpload').addEventListener('click', async function() {
+      if (!previewData || !previewImageFile) return;
+
+      try {
+        const imageRef = storage.ref(`products/${Date.now()}_${previewImageFile.name}`);
+        await imageRef.put(previewImageFile);
+        const imageUrl = await imageRef.getDownloadURL();
+
+        await db.collection("products").add({
+          name: previewData.name,
+          price: previewData.price,
+          description: previewData.description,
+          image: imageUrl,
+        });
+
+        document.getElementById('previewModal').classList.add('hidden');
+        const successModal = document.getElementById('successModal');
+        successModal.classList.remove('hidden');
+        document.getElementById('product-form').reset();
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } catch (err) {
+        showNotification("Upload failed. Please try again.");
+        document.getElementById('previewModal').classList.add('hidden');
+      }
     });
   </script>
+
+  <!-- Notification Modal -->
+  <div id="notification" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded shadow-lg z-50 hidden"></div>
+
+  <!-- Add product preview modal before the successModal div -->
+  <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-8 shadow-xl text-center max-w-md w-full">
+      <h3 class="text-xl font-bold text-pink-600 mb-4">Preview Product</h3>
+      <img id="previewImage" src="" alt="Product Image" class="mx-auto mb-4 rounded-lg max-h-40 object-contain" />
+      <div class="mb-2 font-bold" id="previewName"></div>
+      <div class="mb-2 text-pink-700" id="previewPrice"></div>
+      <div class="mb-4 text-gray-600" id="previewDescription"></div>
+      <div class="flex justify-center gap-4">
+        <button id="confirmUpload" class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition">Confirm & Upload</button>
+        <button id="cancelPreview" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="successModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-8 shadow-xl text-center">
+      <h3 class="text-2xl font-bold text-green-600 mb-2">Success!</h3>
+      <p class="mb-4">Product uploaded successfully.</p>
+      <div class="loader mx-auto mb-2 border-4 border-pink-600 border-t-transparent rounded-full w-8 h-8 animate-spin"></div>
+      <p class="text-sm text-gray-500">Refreshing...</p>
+    </div>
+  </div>
+
+  <style>
+    .loader {
+      border-radius: 50%;
+      border-width: 4px;
+      border-style: solid;
+      border-color: #ec4899 transparent #ec4899 transparent;
+      width: 2rem;
+      height: 2rem;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </body>
 </html>
