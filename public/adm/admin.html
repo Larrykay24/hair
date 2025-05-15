@@ -259,14 +259,41 @@
           productsList.innerHTML = '<div class="text-center text-gray-500">No products found.</div>';
           return;
         }
-        let html = '<div class="overflow-x-auto"><table class="min-w-full text-left"><thead><tr><th class="px-4 py-2">Name</th><th class="px-4 py-2">Price</th><th class="px-4 py-2">Edit</th></tr></thead><tbody>';
+        let html = `
+          <div class="mb-4 flex items-center gap-4">
+            <input type="checkbox" id="selectAll" class="mr-2">
+            <label for="selectAll" class="font-semibold">Select All</label>
+            <button id="deleteSelected" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Delete Selected</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-left">
+              <thead>
+                <tr>
+                  <th class="px-4 py-2"><input type="checkbox" id="selectAllTable"></th>
+                  <th class="px-4 py-2">Name</th>
+                  <th class="px-4 py-2">Price</th>
+                  <th class="px-4 py-2">Edit</th>
+                  <th class="px-4 py-2">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+        `;
+
         snapshot.forEach(doc => {
           const d = doc.data();
           html += `<tr>
+            <td class="border px-4 py-2 text-center">
+              <input type="checkbox" class="selectProduct" data-id="${doc.id}">
+            </td>
             <td class="border px-4 py-2">${d.name}</td>
             <td class="border px-4 py-2">$${Number(d.price).toLocaleString()}</td>
             <td class="border px-4 py-2">
               <button class="editBtn bg-yellow-500 text-white px-3 py-1 rounded" data-id="${doc.id}">Edit</button>
+            </td>
+            <td class="border px-4 py-2 text-center">
+              <button class="deleteBtn text-red-600" title="Delete" data-id="${doc.id}">
+                <i class='bx bx-trash text-2xl'></i>
+              </button>
             </td>
           </tr>`;
         });
@@ -288,6 +315,47 @@
             document.getElementById('editProductForm').setAttribute('data-id', id);
             document.getElementById('editImage').value = '';
           });
+        });
+
+        // Single delete
+        document.querySelectorAll('.deleteBtn').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            const id = this.getAttribute('data-id');
+            if (confirm('Are you sure you want to delete this product?')) {
+              await db.collection('products').doc(id).delete();
+              showNotification("Product deleted!", "bg-green-600");
+              loadProductsForEdit();
+            }
+          });
+        });
+
+        // Select all logic
+        const selectAll = document.getElementById('selectAll');
+        const selectAllTable = document.getElementById('selectAllTable');
+        selectAll && selectAll.addEventListener('change', function() {
+          document.querySelectorAll('.selectProduct').forEach(cb => cb.checked = this.checked);
+          if (selectAllTable) selectAllTable.checked = this.checked;
+        });
+        selectAllTable && selectAllTable.addEventListener('change', function() {
+          document.querySelectorAll('.selectProduct').forEach(cb => cb.checked = this.checked);
+          if (selectAll) selectAll.checked = this.checked;
+        });
+
+        // Multi-delete
+        const deleteSelected = document.getElementById('deleteSelected');
+        deleteSelected && deleteSelected.addEventListener('click', async function() {
+          const checked = Array.from(document.querySelectorAll('.selectProduct:checked'));
+          if (checked.length === 0) {
+            showNotification("No products selected.", "bg-red-500");
+            return;
+          }
+          if (confirm(`Delete ${checked.length} selected product(s)?`)) {
+            for (const cb of checked) {
+              await db.collection('products').doc(cb.getAttribute('data-id')).delete();
+            }
+            showNotification("Selected products deleted!", "bg-green-600");
+            loadProductsForEdit();
+          }
         });
       }
 
