@@ -33,6 +33,7 @@
       <input type="file" name="image" accept="image/*" class="w-full" required />
       <button type="submit" class="bg-pink-600 text-white py-2 px-6 rounded-lg hover:bg-pink-700 transition">Upload Product</button>
     </form>
+    <div id="productsList" class="mt-10"></div>
   </div>
 
   <!-- Firebase Scripts -->
@@ -169,6 +170,89 @@
         document.getElementById('previewModal').classList.add('hidden');
       }
     });
+
+    // Fetch and display products for editing
+    async function loadProductsForEdit() {
+      const productsList = document.getElementById('productsList');
+      productsList.innerHTML = '<div class="text-center text-gray-500">Loading products...</div>';
+      const snapshot = await db.collection('products').orderBy('name').get();
+      if (snapshot.empty) {
+        productsList.innerHTML = '<div class="text-center text-gray-500">No products found.</div>';
+        return;
+      }
+      let html = '<div class="overflow-x-auto"><table class="min-w-full text-left"><thead><tr><th class="px-4 py-2">Name</th><th class="px-4 py-2">Price</th><th class="px-4 py-2">Edit</th></tr></thead><tbody>';
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        html += `<tr>
+          <td class="border px-4 py-2">${d.name}</td>
+          <td class="border px-4 py-2">₦${Number(d.price).toLocaleString()}</td>
+          <td class="border px-4 py-2">
+            <button class="editBtn bg-yellow-500 text-white px-3 py-1 rounded" data-id="${doc.id}">Edit</button>
+          </td>
+        </tr>`;
+      });
+      html += '</tbody></table></div>';
+      productsList.innerHTML = html;
+
+      // Attach edit button listeners
+      document.querySelectorAll('.editBtn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          const id = this.getAttribute('data-id');
+          const docSnap = await db.collection('products').doc(id).get();
+          if (!docSnap.exists) return showNotification("Product not found");
+          const data = docSnap.data();
+          document.getElementById('editName').value = data.name;
+          document.getElementById('editPrice').value = data.price;
+          document.getElementById('editDescription').value = data.description;
+          document.getElementById('editImagePreview').src = data.image || '';
+          document.getElementById('editModal').classList.remove('hidden');
+          document.getElementById('editProductForm').setAttribute('data-id', id);
+          document.getElementById('editImage').value = '';
+        });
+      });
+    }
+
+    // Hide edit modal
+    document.getElementById('cancelEdit').addEventListener('click', function() {
+      document.getElementById('editModal').classList.add('hidden');
+    });
+
+    // Handle edit form submit
+    document.getElementById('editProductForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('data-id');
+      const name = document.getElementById('editName').value.trim();
+      const price = parseFloat(document.getElementById('editPrice').value);
+      const description = document.getElementById('editDescription').value.trim();
+      const imageInput = document.getElementById('editImage');
+      let imageUrl = document.getElementById('editImagePreview').src;
+
+      // If a new image is selected, upload it
+      if (imageInput.files && imageInput.files[0]) {
+        const imageFile = imageInput.files[0];
+        const imageRef = storage.ref(`products/${Date.now()}_${imageFile.name}`);
+        await imageRef.put(imageFile);
+        imageUrl = await imageRef.getDownloadURL();
+      }
+
+      await db.collection('products').doc(id).update({
+        name,
+        price,
+        description,
+        image: imageUrl
+      });
+
+      showNotification("Product updated!", "bg-green-600");
+      document.getElementById('editModal').classList.add('hidden');
+      loadProductsForEdit();
+    });
+
+    // Load products after login
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        loadProductsForEdit();
+      }
+    });
   </script>
 
   <!-- Notification Modal -->
@@ -195,6 +279,24 @@
       <p class="mb-4">Product uploaded successfully.</p>
       <div class="loader mx-auto mb-2 border-4 border-pink-600 border-t-transparent rounded-full w-8 h-8 animate-spin"></div>
       <p class="text-sm text-gray-500">Refreshing...</p>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-8 shadow-xl text-center max-w-md w-full">
+      <h3 class="text-xl font-bold text-pink-600 mb-4">Edit Product</h3>
+      <form id="editProductForm" class="space-y-4">
+        <input type="text" id="editName" class="w-full p-3 border rounded-lg" required />
+        <input type="number" id="editPrice" class="w-full p-3 border rounded-lg" required />
+        <textarea id="editDescription" class="w-full p-3 border rounded-lg" required></textarea>
+        <img id="editImagePreview" src="" alt="Product Image" class="mx-auto mb-2 rounded-lg max-h-32 object-contain" />
+        <input type="file" id="editImage" accept="image/*" class="w-full" />
+        <div class="flex justify-center gap-4">
+          <button type="submit" class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition">Save Changes</button>
+          <button type="button" id="cancelEdit" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
 
