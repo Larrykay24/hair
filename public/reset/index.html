@@ -26,7 +26,7 @@
     <p id="error" class="text-sm text-red-500 mt-3 hidden"></p>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script>
     const firebaseConfig = {
@@ -38,6 +38,12 @@
       appId: "1:172889498629:web:5b66a3eec207839a25286c"
     };
     firebase.initializeApp(firebaseConfig);
+
+    // Get oobCode from URL
+    function getOobCode() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('oobCode');
+    }
 
     document.getElementById('password-form').addEventListener('submit', function (e) {
       e.preventDefault();
@@ -60,21 +66,22 @@
 
       errorDisplay.classList.add('hidden');
 
-      const user = firebase.auth().currentUser;
-      if (user) {
-        user.updatePassword(newPassword)
-          .then(() => {
-            alert("Password reset successful!");
-            window.location.href = "https://reniksbeautyplace.com/adm/admin.html";
-          })
-          .catch((error) => {
-            errorDisplay.textContent = error.message || "Failed to reset password.";
-            errorDisplay.classList.remove('hidden');
-          });
-      } else {
-        errorDisplay.textContent = "You must be logged in to reset your password.";
+      const oobCode = getOobCode();
+      if (!oobCode) {
+        errorDisplay.textContent = "Invalid or expired password reset link.";
         errorDisplay.classList.remove('hidden');
+        return;
       }
+
+      firebase.auth().confirmPasswordReset(oobCode, newPassword)
+        .then(() => {
+          alert("Password reset successful! You can now log in with your new password.");
+          window.location.href = "https://reniksbeautyplace.com/adm/admin.html";
+        })
+        .catch((error) => {
+          errorDisplay.textContent = error.message || "Failed to reset password.";
+          errorDisplay.classList.remove('hidden');
+        });
     });
   </script>
 </body>
