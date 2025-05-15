@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Reniks Beauty</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body class="bg-pink-50 min-h-screen flex items-center justify-center">
+
+  <!-- Login Section -->
+  <div id="login-section" class="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
+    <h2 class="text-2xl font-bold text-pink-600 mb-4 text-center">Admin Login</h2>
+    <form id="login-form" class="space-y-4">
+      <input type="text" id="username" placeholder="Enter Username" class="w-full p-3 border rounded-lg focus:outline-none" />
+      <input type="password" id="password" placeholder="Enter Password" class="w-full p-3 border rounded-lg focus:outline-none" />
+      <input type="text" id="secret" placeholder="Enter Secret Phrase" class="w-full p-3 border rounded-lg focus:outline-none" />
+      <button type="submit" class="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition">Login</button>
+    </form>
+  </div>
+
+  <!-- Upload Section -->
+  <div id="upload-section" class="hidden bg-white p-6 rounded-xl shadow-xl w-full max-w-2xl">
+    <h2 class="text-2xl font-bold text-pink-600 mb-4 text-center">Upload New Product</h2>
+    <form id="product-form" class="space-y-4">
+      <input type="text" name="name" placeholder="e.g. Luxury Wig 22 Inches" class="w-full p-3 border rounded-lg" required />
+      <input type="number" name="price" placeholder="e.g. 15000" class="w-full p-3 border rounded-lg" required />
+      <textarea name="description" placeholder="Write a short product description..." class="w-full p-3 border rounded-lg" required></textarea>
+      <input type="file" name="image" accept="image/*" class="w-full" required />
+      <button type="submit" class="bg-pink-600 text-white py-2 px-6 rounded-lg hover:bg-pink-700 transition">Upload Product</button>
+    </form>
+  </div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
+  <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
+      authDomain: "hair-vstore.firebaseapp.com",
+      projectId: "hair-vstore",
+      storageBucket: "hair-vstore.appspot.com",
+      messagingSenderId: "172889498629",
+      appId: "1:172889498629:web:5b66a3eec207839a25286c"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // Login Validation
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const secret = document.getElementById('secret').value.trim();
+
+      const validate = (u, p, s) => {
+        const x = btoa("Carpets"); // encoded secret
+        return u === "admin" && p === "1000" && btoa(s) === x;
+      };
+
+      if (validate(username, password, secret)) {
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('upload-section').classList.remove('hidden');
+      } else {
+        alert("Access Denied! Incorrect credentials or secret.");
+      }
+    });
+
+    // Product Upload Logic
+    document.getElementById('product-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name = this.name.value.trim();
+      const price = parseFloat(this.price.value);
+      const description = this.description.value.trim();
+      const imageFile = this.image.files[0];
+
+      if (!name || !price || !description || !imageFile) {
+        alert("Please complete all fields.");
+        return;
+      }
+
+      const imageRef = storage.ref(`products/${Date.now()}_${imageFile.name}`);
+      await imageRef.put(imageFile);
+      const imageUrl = await imageRef.getDownloadURL();
+
+      await db.collection("products").add({
+        name,
+        price,
+        description,
+        imageUrl,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert("Product uploaded successfully!");
+      this.reset();
+    });
+  </script>
+</body>
+</html>
