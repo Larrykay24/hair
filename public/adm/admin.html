@@ -48,8 +48,8 @@
       <div class="mb-2 text-pink-700" id="previewPrice"></div>
       <div class="mb-4 text-gray-600" id="previewDescription"></div>
       <div class="flex justify-center gap-4">
-        <button id="confirmUpload" class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition">Confirm & Upload</button>
-        <button id="cancelPreview" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition">Cancel</button>
+        <button id="confirmUpload" type="button" class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition">Confirm & Upload</button>
+        <button id="cancelPreview" type="button" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition">Cancel</button>
       </div>
     </div>
   </div>
@@ -211,6 +211,7 @@
         if (!previewData || !previewImageFile) return;
 
         try {
+          // Show loader or disable button here if you want
           const imageRef = storage.ref(`products/${Date.now()}_${previewImageFile.name}`);
           await imageRef.put(previewImageFile);
           const imageUrl = await imageRef.getDownloadURL();
@@ -232,6 +233,7 @@
         } catch (err) {
           showNotification("Upload failed. Please try again.");
           document.getElementById('previewModal').classList.add('hidden');
+          console.error(err); // Add this for debugging
         }
       };
 
