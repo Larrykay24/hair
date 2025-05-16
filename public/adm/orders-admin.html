@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Orders Admin - Reniks Beauty</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+</head>
+<body class="bg-pink-50 min-h-screen flex flex-col items-center justify-start">
+  <div class="w-full max-w-5xl mt-10 bg-white p-8 rounded-xl shadow-xl">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-pink-600">Orders Management</h2>
+      <a href="admin.html" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition flex items-center">
+        <i class='bx bx-arrow-back mr-2'></i>Back to Products
+      </a>
+    </div>
+    <div id="ordersList" class="overflow-x-auto"></div>
+  </div>
+
+  <div id="notification" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded shadow-lg z-50 hidden"></div>
+
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
+      authDomain: "hair-vstore.firebaseapp.com",
+      projectId: "hair-vstore",
+      storageBucket: "hair-vstore.appspot.com",
+      messagingSenderId: "172889498629",
+      appId: "1:172889498629:web:5b66a3eec207839a25286c"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Show notification
+    function showNotification(message, color = 'bg-green-600') {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `fixed top-6 left-1/2 transform -translate-x-1/2 ${color} text-white px-6 py-3 rounded shadow-lg z-50`;
+      notification.classList.remove('hidden');
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 2500);
+    }
+
+    // Render orders
+    async function loadOrders() {
+      const ordersList = document.getElementById('ordersList');
+      ordersList.innerHTML = '<div class="text-center text-gray-500">Loading orders...</div>';
+      const snapshot = await db.collection('orders').orderBy('createdAt', 'desc').get();
+      if (snapshot.empty) {
+        ordersList.innerHTML = '<div class="text-center text-gray-500">No orders found.</div>';
+        return;
+      }
+      let html = `
+        <table class="min-w-full text-left border">
+          <thead>
+            <tr>
+              <th class="px-4 py-2 border">Order ID</th>
+              <th class="px-4 py-2 border">Name</th>
+              <th class="px-4 py-2 border">Phone</th>
+              <th class="px-4 py-2 border">Email</th>
+              <th class="px-4 py-2 border">Address</th>
+              <th class="px-4 py-2 border">Order</th>
+              <th class="px-4 py-2 border">Status</th>
+              <th class="px-4 py-2 border">Date</th>
+              <th class="px-4 py-2 border">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        html += `<tr>
+          <td class="border px-4 py-2 font-mono text-xs">${d.orderId || doc.id}</td>
+          <td class="border px-4 py-2">${d.name || ''}</td>
+          <td class="border px-4 py-2">${d.phone || ''}</td>
+          <td class="border px-4 py-2">${d.email || ''}</td>
+          <td class="border px-4 py-2">${d.address || ''}</td>
+          <td class="border px-4 py-2 whitespace-pre-line text-xs">${d.orderSummary || ''}</td>
+          <td class="border px-4 py-2">
+            <span class="px-2 py-1 rounded text-xs font-semibold ${d.status === 'Delivered' ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800'}">${d.status || 'Pending'}</span>
+          </td>
+          <td class="border px-4 py-2 text-xs">${d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : ''}</td>
+          <td class="border px-4 py-2">
+            <button class="changeStatusBtn bg-pink-600 text-white px-3 py-1 rounded mb-1" data-id="${doc.id}" data-status="${d.status || 'Pending'}">
+              ${d.status === 'Delivered' ? 'Mark Pending' : 'Mark Delivered'}
+            </button>
+          </td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+      ordersList.innerHTML = html;
+
+      // Attach status change listeners
+      document.querySelectorAll('.changeStatusBtn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          const id = this.getAttribute('data-id');
+          const currentStatus = this.getAttribute('data-status');
+          const newStatus = currentStatus === 'Delivered' ? 'Pending' : 'Delivered';
+          await db.collection('orders').doc(id).update({ status: newStatus });
+          showNotification(`Order marked as ${newStatus}!`);
+          loadOrders();
+        });
+      });
+    }
+
+    // Require admin login
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        // Show modal and block page
+        document.getElementById('blockModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('goToLogin').onclick = function() {
+          window.location.href = "admin.html";
+        };
+      } else {
+        loadOrders();
+      }
+    });
+  </script>
+
+  <!-- Add this modal just before the closing </body> tag -->
+  <div id="blockModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-8 shadow-xl text-center max-w-xs w-full">
+      <h3 class="text-xl font-bold text-red-600 mb-4">Access Denied</h3>
+      <p class="mb-4">You must be logged in as admin to manage orders.</p>
+      <button id="goToLogin" class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition">Go to Login</button>
+    </div>
+  </div>
+</body>
+</html>
