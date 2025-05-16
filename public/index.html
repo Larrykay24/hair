@@ -432,7 +432,7 @@
                     <!-- Cart items will be dynamically added here -->
                 </div>
                 <div class="mt-4">
-                    <p class="text-lg font-bold">Total: $<span id="cartTotal">0</span>,000</p>
+                    <p class="text-lg font-bold">Total: $<span id="cartTotal">0</span></p>
                 </div>
                 <div class="mt-4 flex justify-between">
                     <button id="clearCartBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg">Clear Cart</button>
@@ -697,7 +697,7 @@
                             <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
                             <div class="flex-1 ml-4">
                                 <h3 class="text-lg font-bold">${item.name}</h3>
-                                <p class="text-pink-500 font-semibold">$${item.price},000</p>
+                                <p class="text-pink-500 font-semibold">$${item.price}</p>
                                 <div class="flex items-center mt-2">
                                     <button class="bg-gray-300 text-gray-700 px-2 py-1 rounded-lg decrease-quantity" data-id="${item.id}">-</button>
                                     <span class="mx-2">${item.quantity}</span>
@@ -753,7 +753,7 @@
                     id: productElement.dataset.id,
                     image: productElement.querySelector('img').src,
                     name: productElement.querySelector('h2').textContent,
-                    price: parseInt(productElement.querySelector('.text-pink-500').textContent.replace('$', '').replace(',000', '')),
+                    price: parseInt(productElement.querySelector('.text-pink-500').textContent.replace('$', '').replace('', '')),
                     quantity: 1
                 };
 
