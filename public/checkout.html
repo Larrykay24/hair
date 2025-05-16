@@ -59,6 +59,10 @@
     .floating-icon a:hover { background-color: #1DA851; }
     .scroll-to-top { background-color: #ec4899; }
     .scroll-to-top:hover { background-color: #db2777; }
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+    .modal { background: #fff; border-radius: 1rem; padding: 2rem; max-width: 90vw; width: 400px; text-align: center; }
+    .copy-btn { background: #ec4899; color: #fff; border: none; border-radius: 0.5rem; padding: 0.5rem 1rem; margin-left: 0.5rem; cursor: pointer; }
+    .copy-btn:hover { background: #db2777; }
     @media (max-width: 768px) {
       .text-4xl { font-size: 1.5rem; }
       .text-2xl { font-size: 1.25rem; }
@@ -104,6 +108,18 @@
         <div id="checkoutItems"></div>
         <form id="checkoutForm" class="mt-6 space-y-4">
           <div>
+            <label for="name" class="block font-semibold mb-1">Full Name</label>
+            <input id="name" class="w-full p-3 border rounded-lg" required placeholder="Enter your full name"/>
+          </div>
+          <div>
+            <label for="phone" class="block font-semibold mb-1">Phone Number</label>
+            <input id="phone" class="w-full p-3 border rounded-lg" required placeholder="Enter your phone number"/>
+          </div>
+          <div>
+            <label for="email" class="block font-semibold mb-1">Email</label>
+            <input id="email" type="email" class="w-full p-3 border rounded-lg" required placeholder="Enter your email"/>
+          </div>
+          <div>
             <label for="address" class="block font-semibold mb-1">Delivery Address</label>
             <textarea id="address" class="w-full p-3 border rounded-lg" rows="3" required placeholder="Enter your delivery address"></textarea>
           </div>
@@ -121,10 +137,37 @@
           </div>
           <div id="paypal-button-container" class="mt-6"></div>
         </form>
+        <!-- Hidden form for FormSubmit -->
+        <form id="formsubmit" action="https://formsubmit.co/YOUR_EMAIL_HERE" method="POST" target="_blank" style="display:none;">
+          <input type="hidden" name="order_id" id="fs_order_id">
+          <input type="hidden" name="name" id="fs_name">
+          <input type="hidden" name="phone" id="fs_phone">
+          <input type="hidden" name="email" id="fs_email">
+          <input type="hidden" name="address" id="fs_address">
+          <input type="hidden" name="order" id="fs_order">
+          <input type="hidden" name="_subject" value="New Order from Reniks Beauty">
+        </form>
         <div id="emptyCartMsg" class="text-center text-gray-500 mt-8 hidden">Your cart is empty.</div>
+        <div class="mt-8 text-center">
+          <button id="checkOrderStatusBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Check Order Status</button>
+        </div>
       </div>
     </section>
   </main>
+
+  <!-- Order ID Modal -->
+  <div id="orderIdModal" class="modal-bg hidden">
+    <div class="modal">
+      <h3 class="text-xl font-bold text-pink-600 mb-2">Order Placed!</h3>
+      <p class="mb-2">Your Order ID:</p>
+      <div class="flex items-center justify-center mb-2">
+        <span id="orderIdDisplay" class="font-mono text-lg bg-gray-100 px-2 py-1 rounded"></span>
+        <button id="copyOrderIdBtn" class="copy-btn ml-2" title="Copy Order ID"><i class="bx bx-copy"></i></button>
+      </div>
+      <p class="text-sm text-red-500 font-semibold mb-2">Please copy and save your Order ID for delivery and status check!</p>
+      <button onclick="document.getElementById('orderIdModal').classList.add('hidden')" class="mt-2 bg-gray-300 px-4 py-2 rounded">Close</button>
+    </div>
+  </div>
 
   <footer class="bg-gray-800 text-white text-center py-6 mt-12">
     <p>&copy; 2023 Reniks Beauty Saloon. All rights reserved.</p>
@@ -181,6 +224,11 @@
     document.getElementById('cartIcon').addEventListener('click', () => {
       window.location.href = "view-cart.html";
     });
+
+    // Generate Order ID
+    function generateOrderId() {
+      return 'RENIKS-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+    }
 
     // Render checkout items and totals
     async function renderCheckout() {
@@ -266,13 +314,59 @@
           });
         },
         onApprove: function(data, actions) {
-          return actions.order.capture().then(function(details) {
-            showNotification('Payment successful! Thank you, ' + details.payer.name.given_name + '.');
-            // Optionally, save order to Firestore here
+          return actions.order.capture().then(async function(details) {
+            // Generate Order ID
+            const orderId = generateOrderId();
+
+            // Prepare order summary
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const address = document.getElementById('address').value;
+            let orderSummary = '';
+            cart.forEach(item => {
+              orderSummary += `${item.name} x ${item.quantity || 1} - $${item.price}\n`;
+            });
+            orderSummary += `\nSubtotal: $${document.getElementById('subtotal').textContent}`;
+            orderSummary += `\nDelivery Fee: $2`;
+            orderSummary += `\nTotal: $${document.getElementById('grandTotal').textContent}`;
+
+            // Save order to Firestore
+            await db.collection("orders").doc(orderId).set({
+              orderId,
+              name,
+              phone,
+              email,
+              address,
+              orderSummary,
+              status: "Pending",
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // Fill hidden form fields for FormSubmit
+            document.getElementById('fs_order_id').value = orderId;
+            document.getElementById('fs_name').value = name;
+            document.getElementById('fs_phone').value = phone;
+            document.getElementById('fs_email').value = email;
+            document.getElementById('fs_address').value = address;
+            document.getElementById('fs_order').value = orderSummary;
+
+            // Submit the hidden form to FormSubmit
+            document.getElementById('formsubmit').submit();
+
+            // Show Order ID Modal
+            document.getElementById('orderIdDisplay').textContent = orderId;
+            document.getElementById('orderIdModal').classList.remove('hidden');
+
+            // Copy button logic
+            document.getElementById('copyOrderIdBtn').onclick = function() {
+              navigator.clipboard.writeText(orderId);
+              showNotification("Order ID copied!");
+            };
+
+            // Clear cart
             localStorage.removeItem('cart');
-            setTimeout(() => {
-              window.location.href = "index.html";
-            }, 2000);
+            updateCartIcon();
           });
         },
         onError: function(err) {
@@ -280,6 +374,19 @@
         }
       }).render('#paypal-button-container');
     }
+
+    // Check Order Status
+    document.getElementById('checkOrderStatusBtn').onclick = async function() {
+      const orderId = prompt("Enter your Order ID:");
+      if (!orderId) return;
+      const doc = await db.collection("orders").doc(orderId).get();
+      if (doc.exists) {
+        const status = doc.data().status || "Pending";
+        alert("Order Status: " + status);
+      } else {
+        alert("Order not found. Please check your Order ID.");
+      }
+    };
 
     // Scroll to top functionality
     document.querySelector('.scroll-to-top').addEventListener('click', () => {
@@ -292,4 +399,3 @@
   </script>
 </body>
 </html>
-``` 
