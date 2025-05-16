@@ -1,240 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Checkout</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link href="/css/styles.css" rel="stylesheet">
-    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        main {
-            flex: 1;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Checkout - Reniks Beauty</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main { flex: 1; }
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #38a169;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      font-size: 16px;
+      z-index: 1000;
+      display: none;
+      animation: fadeInOut 3s ease-in-out;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(-10px);}
+      10%, 90% { opacity: 1; transform: translateY(0);}
+      100% { opacity: 0; transform: translateY(-10px);}
+    }
+    .floating-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .floating-icon a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #25D366;
+      color: white;
+      font-size: 24px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: background-color 0.3s ease;
+    }
+    .floating-icon a:hover { background-color: #1DA851; }
+    .scroll-to-top { background-color: #ec4899; }
+    .scroll-to-top:hover { background-color: #db2777; }
+    @media (max-width: 768px) {
+      .text-4xl { font-size: 1.5rem; }
+      .text-2xl { font-size: 1.25rem; }
+      .mt-4 { margin-top: 1rem; }
+      .notification { font-size: 14px; }
+    }
+  </style>
+  <!-- PayPal SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
 </head>
-<body class="bg-white text-gray-900">
+<body class="bg-pink-50 text-gray-900">
+  <!-- Floating Icons -->
+  <div class="floating-icon">
+    <a href="https://wa.me/1234567890" target="_blank" title="Chat on WhatsApp">
+      <i class="bx bxl-whatsapp"></i>
+    </a>
+    <a href="#" class="scroll-to-top" title="Scroll to Top">
+      <i class="bx bx-chevron-up"></i>
+    </a>
+  </div>
+
+  <main>
     <!-- Header Section -->
-    <header class="bg-gray-800 text-white p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold">Reniks</a>
+    <header class="bg-gray-800 text-white p-4 relative">
+      <div class="container mx-auto flex justify-between items-center">
+        <a href="index.html" class="text-2xl font-bold">Reniks</a>
+        <div class="flex items-center space-x-6">
+          <button id="cartIcon" class="relative text-2xl">
+            <i class="bx bx-cart"></i>
+            <span id="cartCount" class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full px-2 hidden">0</span>
+          </button>
         </div>
+      </div>
     </header>
 
-    <main class="container mx-auto px-4 mt-8">
-        <h1 class="text-2xl font-bold mb-4 text-center">Checkout</h1>
-        <div id="checkoutItems" class="space-y-4">
-            <!-- Checkout items will be dynamically added here -->
-        </div>
-        <div class="mt-4">
-            <p class="text-lg font-bold text-center">Total: ₦<span id="checkoutTotal">0</span>,000</p>
-        </div>
+    <!-- Notification -->
+    <div id="notification" class="notification hidden"></div>
 
-        <!-- Delivery Section -->
-        <div class="mt-6 bg-gray-100 p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold mb-4">Delivery Options</h2>
-            <div class="mb-4">
-                <label for="deliveryMethod" class="block text-gray-700 font-semibold mb-2">Delivery Method</label>
-                <div class="relative">
-                    <select id="deliveryMethod" class="w-full border-gray-300 rounded-lg px-4 py-2 bg-white shadow-sm focus:ring-2 focus:ring-pink-500">
-                        <option value="doorstep">Doorstep Delivery</option>
-                        <option value="pickup">Pickup</option>
-                    </select>
-                    <i class="bx bx-chevron-down absolute right-4 top-3 text-gray-500"></i>
+    <!-- Checkout Section -->
+    <section class="container mx-auto px-4 mt-8">
+      <div class="bg-white w-full max-w-2xl mx-auto p-8 rounded-2xl shadow-xl">
+        <h2 class="text-2xl font-bold text-pink-600 mb-6 text-center">Checkout</h2>
+        <div id="checkoutItems"></div>
+        <form id="checkoutForm" class="mt-6 space-y-4">
+          <div>
+            <label for="address" class="block font-semibold mb-1">Delivery Address</label>
+            <textarea id="address" class="w-full p-3 border rounded-lg" rows="3" required placeholder="Enter your delivery address"></textarea>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="font-semibold">Subtotal:</span>
+            <span>$<span id="subtotal">0</span></span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="font-semibold">Delivery Fee:</span>
+            <span>$<span id="deliveryFee">2</span></span>
+          </div>
+          <div class="flex justify-between items-center text-lg font-bold">
+            <span>Total:</span>
+            <span>$<span id="grandTotal">0</span></span>
+          </div>
+          <div id="paypal-button-container" class="mt-6"></div>
+        </form>
+        <div id="emptyCartMsg" class="text-center text-gray-500 mt-8 hidden">Your cart is empty.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-800 text-white text-center py-6 mt-12">
+    <p>&copy; 2023 Reniks Beauty Saloon. All rights reserved.</p>
+    <p class="text-sm text-gray-400 mt-2">Developed by 
+      <a href="https://codelarry.org.ng" class="hover:underline font-bold text-gray-400">Code Larry</a>
+    </p>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
+      authDomain: "hair-vstore.firebaseapp.com",
+      projectId: "hair-vstore",
+      storageBucket: "hair-vstore.appspot.com",
+      messagingSenderId: "172889498629",
+      appId: "1:172889498629:web:5b66a3eec207839a25286c"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Cart logic
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    // Notification
+    function showNotification(message) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.classList.remove('hidden');
+      notification.style.display = 'block';
+      setTimeout(() => {
+        notification.classList.add('hidden');
+        notification.style.display = 'none';
+      }, 3000);
+    }
+
+    // Cart badge
+    function updateCartIcon() {
+      const cartCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
+      const cartCountElement = document.getElementById('cartCount');
+      if (cartCount > 0) {
+        cartCountElement.textContent = cartCount;
+        cartCountElement.classList.remove('hidden');
+      } else {
+        cartCountElement.classList.add('hidden');
+      }
+    }
+
+    // Cart icon click
+    document.getElementById('cartIcon').addEventListener('click', () => {
+      window.location.href = "view-cart.html";
+    });
+
+    // Render checkout items and totals
+    async function renderCheckout() {
+      cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const checkoutItemsDiv = document.getElementById('checkoutItems');
+      const subtotalSpan = document.getElementById('subtotal');
+      const deliveryFeeSpan = document.getElementById('deliveryFee');
+      const grandTotalSpan = document.getElementById('grandTotal');
+      const emptyCartMsg = document.getElementById('emptyCartMsg');
+      checkoutItemsDiv.innerHTML = '';
+      let subtotal = 0;
+      const deliveryFee = 2;
+
+      if (cart.length === 0) {
+        emptyCartMsg.classList.remove('hidden');
+        subtotalSpan.textContent = '0';
+        grandTotalSpan.textContent = '0';
+        document.getElementById('paypal-button-container').innerHTML = '';
+        return;
+      } else {
+        emptyCartMsg.classList.add('hidden');
+      }
+
+      for (let idx = 0; idx < cart.length; idx++) {
+        const item = cart[idx];
+        try {
+          const doc = await db.collection("products").doc(item.id || item.productId || item.docId).get();
+          let product = doc.exists ? doc.data() : item;
+          const quantity = item.quantity || 1;
+          subtotal += Number(product.price) * quantity;
+          checkoutItemsDiv.innerHTML += `
+            <div class="flex items-center justify-between border-b py-4">
+              <div class="flex items-center gap-4">
+                <img src="${product.image}" alt="${product.name}" class="w-16 h-16 object-cover rounded-lg border" />
+                <div>
+                  <div class="font-semibold">${product.name}</div>
+                  <div class="text-pink-500">$${product.price} x ${quantity}</div>
                 </div>
+              </div>
             </div>
-            <div class="mb-4">
-                <label for="state" class="block text-gray-700 font-semibold mb-2">State</label>
-                <div class="relative">
-                    <select id="state" class="w-full border-gray-300 rounded-lg px-4 py-2 bg-white shadow-sm focus:ring-2 focus:ring-pink-500">
-                        <option value="">Select State</option>
-                    </select>
-                    <i class="bx bx-chevron-down absolute right-4 top-3 text-gray-500"></i>
+          `;
+        } catch (e) {
+          const quantity = item.quantity || 1;
+          subtotal += Number(item.price) * quantity;
+          checkoutItemsDiv.innerHTML += `
+            <div class="flex items-center justify-between border-b py-4">
+              <div class="flex items-center gap-4">
+                <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg border" />
+                <div>
+                  <div class="font-semibold">${item.name}</div>
+                  <div class="text-pink-500">$${item.price} x ${quantity}</div>
                 </div>
+              </div>
             </div>
-            <div class="mb-4">
-                <label for="lga" class="block text-gray-700 font-semibold mb-2">Local Government Area (LGA)</label>
-                <div class="relative">
-                    <select id="lga" class="w-full border-gray-300 rounded-lg px-4 py-2 bg-white shadow-sm focus:ring-2 focus:ring-pink-500">
-                        <option value="">Select LGA</option>
-                    </select>
-                    <i class="bx bx-chevron-down absolute right-4 top-3 text-gray-500"></i>
-                </div>
-            </div>
-            <div class="mt-4">
-                <p class="text-lg font-bold">Delivery Cost: ₦<span id="deliveryCost">0</span>,000</p>
-            </div>
-        </div>
-
-        <div id="paypal-button-container" class="mt-6 flex justify-center"></div>
-    </main>
-
-    <!-- Footer Section -->
-    <footer class="bg-gray-800 text-white text-center py-6 mt-12">
-        <p>&copy; 2023 Reniks Beauty Saloon. All rights reserved.</p>
-        <p class="text-sm text-gray-400 mt-2">Developed by 
-            <a href="https://codelarry.org.ng" class="hover:underline font-bold text-gray-400">Code Larry</a>
-        </p>
-    </footer>
-
-    <script>
-        const checkoutItemsContainer = document.getElementById('checkoutItems');
-        const checkoutTotalElement = document.getElementById('checkoutTotal');
-        const deliveryMethodElement = document.getElementById('deliveryMethod');
-        const stateElement = document.getElementById('state');
-        const lgaElement = document.getElementById('lga');
-        const deliveryCostElement = document.getElementById('deliveryCost');
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let deliveryCost = 0;
-
-        // Function to render checkout items
-        function renderCheckoutItems() {
-            checkoutItemsContainer.innerHTML = '';
-            let total = 0;
-
-            if (cart.length === 0) {
-                checkoutItemsContainer.innerHTML = "<p class='text-center text-gray-500'>Your cart is empty</p>";
-            } else {
-                cart.forEach(item => {
-                    total += item.price * item.quantity;
-                    checkoutItemsContainer.innerHTML += `
-                        <div class="flex justify-between items-center">
-                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
-                            <div class="flex-1 ml-4">
-                                <h3 class="text-lg font-bold">${item.name}</h3>
-                                <p class="text-pink-500 font-semibold">₦${item.price},000</p>
-                                <p class="text-gray-600">Quantity: ${item.quantity}</p>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            checkoutTotalElement.textContent = total;
+          `;
         }
+      }
+      subtotalSpan.textContent = subtotal.toLocaleString();
+      deliveryFeeSpan.textContent = deliveryFee;
+      grandTotalSpan.textContent = (subtotal + deliveryFee).toLocaleString();
 
-        // Function to calculate delivery cost
-        function calculateDeliveryCost() {
-            const deliveryMethod = deliveryMethodElement.value;
-            const lga = lgaElement.value;
+      // Render PayPal button
+      renderPayPalButton(subtotal + deliveryFee);
+    }
 
-            if (deliveryMethod === 'doorstep') {
-                if (lga === 'magodo') {
-                    deliveryCost = 1; // ₦1,000 for doorstep delivery within Magodo
-                } else if (lga === 'ikeja') {
-                    deliveryCost = 2; // ₦2,000 for Ikeja
-                } else if (lga === 'lekki') {
-                    deliveryCost = 3; // ₦3,000 for Lekki
-                } else if (lga === 'surulere') {
-                    deliveryCost = 2.5; // ₦2,500 for Surulere
-                }
-            } else if (deliveryMethod === 'pickup') {
-                if (lga === 'magodo') {
-                    deliveryCost = 0.5; // ₦500 for pickup within Magodo
-                } else if (lga === 'ikeja') {
-                    deliveryCost = 1; // ₦1,000 for Ikeja
-                } else if (lga === 'lekki') {
-                    deliveryCost = 1.5; // ₦1,500 for Lekki
-                } else if (lga === 'surulere') {
-                    deliveryCost = 1.2; // ₦1,200 for Surulere
-                }
-            }
-
-            deliveryCostElement.textContent = deliveryCost;
-            updateTotal();
+    // PayPal Integration
+    function renderPayPalButton(amount) {
+      document.getElementById('paypal-button-container').innerHTML = '';
+      paypal.Buttons({
+        style: {
+          color: 'pink',
+          shape: 'pill',
+          label: 'pay',
+          height: 40
+        },
+        createOrder: function(data, actions) {
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: amount.toFixed(2)
+              }
+            }]
+          });
+        },
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(details) {
+            showNotification('Payment successful! Thank you, ' + details.payer.name.given_name + '.');
+            // Optionally, save order to Firestore here
+            localStorage.removeItem('cart');
+            setTimeout(() => {
+              window.location.href = "index.html";
+            }, 2000);
+          });
+        },
+        onError: function(err) {
+          showNotification('Payment failed. Please try again.');
         }
+      }).render('#paypal-button-container');
+    }
 
-        // Function to update total cost
-        function updateTotal() {
-            const cartTotal = JSON.parse(localStorage.getItem('checkoutTotal')) || 0;
-            const total = cartTotal + deliveryCost * 1000; // Convert delivery cost to ₦
-            checkoutTotalElement.textContent = total / 1000; // Display in ₦
-        }
+    // Scroll to top functionality
+    document.querySelector('.scroll-to-top').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
-        // Event listeners for delivery options
-        deliveryMethodElement.addEventListener('change', calculateDeliveryCost);
-        stateElement.addEventListener('change', calculateDeliveryCost);
-        lgaElement.addEventListener('change', calculateDeliveryCost);
-
-        // Render checkout items on page load
-        renderCheckoutItems();
-        calculateDeliveryCost();
-
-        // Initialize PayPal button
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                const totalUSD = (JSON.parse(localStorage.getItem('checkoutTotal')) || 0 + deliveryCost * 1000) / 1000; // Convert to USD
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: totalUSD.toFixed(2) // Total amount in USD
-                        }
-                    }]
-                });
-            },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    alert('Transaction completed by ' + details.payer.name.given_name);
-                    cart = [];
-                    localStorage.setItem('cart', JSON.stringify(cart));
-                    localStorage.removeItem('checkoutTotal');
-                    window.location.href = "index.html"; // Redirect to home page after successful payment
-                });
-            },
-            onError: function(err) {
-                console.error('PayPal Checkout Error:', err);
-                alert('An error occurred during the transaction. Please try again.');
-            }
-        }).render('#paypal-button-container');
-
-        // Fetch all States
-        fetch('https://nga-states-lga.onrender.com/fetch')
-            .then((res) => res.json())
-            .then((data) => {
-                const stateDropdown = document.getElementById("state");
-                for (let index = 0; index < Object.keys(data).length; index++) {
-                    const option = document.createElement("option");
-                    option.text = data[index];
-                    option.value = data[index];
-                    stateDropdown.add(option);
-                }
-            });
-
-        // Fetch Local Governments based on selected state
-        function selectLGA(target) {
-            const state = target.value;
-            fetch('https://nga-states-lga.onrender.com/?state=' + state)
-                .then((res) => res.json())
-                .then((data) => {
-                    const lgaDropdown = document.getElementById("lga");
-
-                    // Clear previous LGAs
-                    while (lgaDropdown.options.length > 0) {
-                        lgaDropdown.remove(0);
-                    }
-
-                    // Populate LGAs dropdown
-                    for (let index = 0; index < Object.keys(data).length; index++) {
-                        const option = document.createElement("option");
-                        option.text = data[index];
-                        option.value = data[index];
-                        lgaDropdown.add(option);
-                    }
-                });
-        }
-
-        // Attach event listener to state dropdown
-        document.getElementById("state").addEventListener("change", function () {
-            selectLGA(this);
-        });
-    </script>
+    // Initial render
+    renderCheckout();
+    updateCartIcon();
+  </script>
 </body>
 </html>
