@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Cart - Reniks Beauty</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body class="bg-pink-50 min-h-screen flex items-center justify-center px-4">
+  <div class="bg-white w-full max-w-2xl p-8 rounded-2xl shadow-xl">
+    <h2 class="text-2xl font-bold text-pink-600 mb-6 text-center">Your Cart</h2>
+    <div id="cartItems"></div>
+    <div class="flex justify-between items-center mt-6">
+      <span class="text-lg font-bold">Total: $<span id="cartTotal">0</span></span>
+      <button id="checkoutBtn" class="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 transition">Checkout</button>
+    </div>
+    <div id="emptyCartMsg" class="text-center text-gray-500 mt-8 hidden">Your cart is empty.</div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDkJAkSeg6iF22yMavcEX5Sr9SV7dFO-Tw",
+      authDomain: "hair-vstore.firebaseapp.com",
+      projectId: "hair-vstore",
+      storageBucket: "hair-vstore.appspot.com",
+      messagingSenderId: "172889498629",
+      appId: "1:172889498629:web:5b66a3eec207839a25286c"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function renderCart() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const cartItemsDiv = document.getElementById('cartItems');
+      const cartTotalSpan = document.getElementById('cartTotal');
+      const emptyCartMsg = document.getElementById('emptyCartMsg');
+      cartItemsDiv.innerHTML = '';
+      let total = 0;
+
+      if (cart.length === 0) {
+        emptyCartMsg.classList.remove('hidden');
+        cartTotalSpan.textContent = '0';
+        return;
+      } else {
+        emptyCartMsg.classList.add('hidden');
+      }
+
+      for (let idx = 0; idx < cart.length; idx++) {
+        const item = cart[idx];
+        try {
+          const doc = await db.collection("products").doc(item.id || item.productId || item.docId).get();
+          let product = doc.exists ? doc.data() : item;
+          const quantity = item.quantity || 1;
+          total += Number(product.price) * quantity;
+          cartItemsDiv.innerHTML += `
+            <div class="flex items-center justify-between border-b py-4">
+              <div class="flex items-center gap-4">
+                <img src="${product.image}" alt="${product.name}" class="w-16 h-16 object-cover rounded-lg border" />
+                <div>
+                  <div class="font-semibold">${product.name}</div>
+                  <div class="text-pink-500">$${product.price} x ${quantity}</div>
+                </div>
+              </div>
+              <button class="removeBtn text-red-600" data-idx="${idx}" title="Remove">
+                <i class='bx bx-trash text-2xl'></i>
+              </button>
+            </div>
+          `;
+        } catch (e) {
+          const quantity = item.quantity || 1;
+          total += Number(item.price) * quantity;
+          cartItemsDiv.innerHTML += `
+            <div class="flex items-center justify-between border-b py-4">
+              <div class="flex items-center gap-4">
+                <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg border" />
+                <div>
+                  <div class="font-semibold">${item.name}</div>
+                  <div class="text-pink-500">$${item.price} x ${quantity}</div>
+                </div>
+              </div>
+              <button class="removeBtn text-red-600" data-idx="${idx}" title="Remove">
+                <i class='bx bx-trash text-2xl'></i>
+              </button>
+            </div>
+          `;
+        }
+      }
+      cartTotalSpan.textContent = total.toLocaleString();
+      document.querySelectorAll('.removeBtn').forEach(btn => {
+        btn.onclick = function() {
+          const idx = this.getAttribute('data-idx');
+          cart.splice(idx, 1);
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+        }
+      });
+    }
+
+    document.getElementById('checkoutBtn').onclick = function() {
+      alert('Checkout functionality coming soon!');
+    };
+
+    renderCart();
+  </script>
+</body>
+</html>
