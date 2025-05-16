@@ -169,6 +169,19 @@
     </div>
   </div>
 
+  <!-- Order Status Modal -->
+  <div id="orderStatusModal" class="modal-bg hidden">
+    <div class="modal">
+      <h3 class="text-xl font-bold text-pink-600 mb-2">Check Order Status</h3>
+      <input id="statusOrderIdInput" type="text" class="w-full p-3 border rounded-lg mb-4" placeholder="Enter your Order ID" />
+      <div id="orderStatusResult" class="mb-4 text-sm"></div>
+      <div class="flex justify-center gap-2">
+        <button id="checkStatusBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Check Status</button>
+        <button id="closeStatusModalBtn" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition">Close</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="bg-gray-800 text-white text-center py-6 mt-12">
     <p>&copy; 2023 Reniks Beauty Saloon. All rights reserved.</p>
     <p class="text-sm text-gray-400 mt-2">Developed by 
@@ -376,16 +389,40 @@
     }
 
     // Check Order Status
-    document.getElementById('checkOrderStatusBtn').onclick = async function() {
-      const orderId = prompt("Enter your Order ID:");
-      if (!orderId) return;
-      const doc = await db.collection("orders").doc(orderId).get();
-      if (doc.exists) {
-        const status = doc.data().status || "Pending";
-        alert("Order Status: " + status);
-      } else {
-        alert("Order not found. Please check your Order ID.");
+    document.getElementById('checkOrderStatusBtn').onclick = function() {
+      document.getElementById('orderStatusModal').classList.remove('hidden');
+      document.getElementById('orderStatusResult').textContent = '';
+      document.getElementById('statusOrderIdInput').value = '';
+    };
+
+    document.getElementById('checkStatusBtn').onclick = async function() {
+      const orderId = document.getElementById('statusOrderIdInput').value.trim();
+      const resultDiv = document.getElementById('orderStatusResult');
+      if (!orderId) {
+        resultDiv.textContent = "Please enter your Order ID.";
+        resultDiv.className = "mb-4 text-sm text-red-500";
+        return;
       }
+      resultDiv.textContent = "Checking...";
+      resultDiv.className = "mb-4 text-sm text-gray-500";
+      try {
+        const doc = await db.collection("orders").doc(orderId).get();
+        if (doc.exists) {
+          const status = doc.data().status || "Pending";
+          resultDiv.textContent = "Order Status: " + status;
+          resultDiv.className = "mb-4 text-sm text-green-600 font-semibold";
+        } else {
+          resultDiv.textContent = "Order not found. Please check your Order ID.";
+          resultDiv.className = "mb-4 text-sm text-red-500";
+        }
+      } catch (e) {
+        resultDiv.textContent = "Error checking status. Please try again.";
+        resultDiv.className = "mb-4 text-sm text-red-500";
+      }
+    };
+
+    document.getElementById('closeStatusModalBtn').onclick = function() {
+      document.getElementById('orderStatusModal').classList.add('hidden');
     };
 
     // Scroll to top functionality
